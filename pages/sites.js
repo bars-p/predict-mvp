@@ -1,4 +1,4 @@
-import Sites from "../src/Sites";
+import Sites from "../src/components/sites/Sites";
 
 const SitesPage = () => {
     return ( 

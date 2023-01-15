@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -20,8 +20,8 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
-import Title from './Title';
-import { DataContext } from './contexts/DataContext';
+import Title from '../layout/Title';
+import { DataContext } from '../../contexts/DataContext';
 
 const mdTheme = createTheme();
 
@@ -248,8 +248,8 @@ EnhancedTableToolbar.propTypes = {
 };
 
 function EnhancedTable() {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('name');
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('name');
 
   const { sites, deleteSite } = useContext(DataContext);
   const tableData = sites.map( site => ({
