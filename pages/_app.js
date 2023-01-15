@@ -5,6 +5,7 @@ import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
+import DataContextProvider from '../src/contexts/DataContext';
 
 
 export default function App({ Component, pageProps }) {
@@ -15,7 +16,9 @@ export default function App({ Component, pageProps }) {
       </Head>
       <main>
         <Layout>
-          <Component {...pageProps} />
+          <DataContextProvider>
+            <Component {...pageProps} />
+          </DataContextProvider>
         </Layout>
       </main>
     </>

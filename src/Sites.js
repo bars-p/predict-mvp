@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -21,7 +21,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 import Title from './Title';
-
+import { DataContext } from './contexts/DataContext';
 
 const mdTheme = createTheme();
 
@@ -70,7 +70,7 @@ const tableHeaders = [
   },
 ];
 
-const sitesList = [
+const sitesListOld = [
   {
     id: 1,
     name: 'Factory',
@@ -163,15 +163,6 @@ const sitesList = [
   },
 ];
 
-const tableData = sitesList.map( site => ({
-  id: site.id,
-  name: site.name,
-  code: site.short,
-  ladsNumber: site.ladsList.length,
-  ladsName: site.ladsList.join(', '),
-  action: null,
-}));
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -260,6 +251,16 @@ function EnhancedTable() {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('name');
 
+  const { sites, deleteSite } = useContext(DataContext);
+  const tableData = sites.map( site => ({
+    id: site.id,
+    name: site.name,
+    code: site.short,
+    ladsNumber: site.ladsList.length,
+    ladsName: site.ladsList.join(', '),
+    action: null,
+  }));
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -299,7 +300,7 @@ function EnhancedTable() {
                 <IconButton 
                   size='small' 
                   sx={{ ml: 1 }}
-                  onClick={() => console.log('Delete item:', row.id, row.name)}
+                  onClick={() => deleteSite(row.id)}
                 >
                   <DeleteIcon 
                     fontSize='inherit' 
@@ -315,6 +316,7 @@ function EnhancedTable() {
 };
 
 export default function Sites() {
+  const { sites } = useContext(DataContext);
   return (
     <ThemeProvider theme={mdTheme}>
           <Grid container spacing={3}>
@@ -327,7 +329,7 @@ export default function Sites() {
                   maxHeight: '83vh' 
                 }}
               >
-                <EnhancedTableToolbar>Sites ({tableData.length})</EnhancedTableToolbar>
+                <EnhancedTableToolbar>Sites ({sites.length})</EnhancedTableToolbar>
                 <TableContainer>
                   <EnhancedTable />
                 </TableContainer>
