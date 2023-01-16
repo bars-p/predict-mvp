@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Chart from '../old/Chart';
 // import Deposits from './Deposits';
-import Orders from '../old/Orders';
+// import Orders from '../old/Orders';
 import SimpleTable from '../layout/SimpleTable';
 import { DataContext } from '../../contexts/DataContext';
 import { useRouter } from 'next/router';
@@ -17,8 +17,19 @@ const mdTheme = createTheme();
 export default function Dashboard() {
   const router = useRouter();
   const sitesRoute = '/sites';
-  const { sites } = useContext(DataContext);
-  const sitesHeaders = [
+  const segmentsRoute = '/segments';
+  const ladsRoute = '/lads';
+  const { sites, segments, lads } = useContext(DataContext);
+
+  const getSiteCodeById = (id) => {
+    return sites.find(site => site.id == id)?.short || '?';
+  };
+  
+  const getSiteNameById = (id) => {
+    return sites.find(site => site.id == id)?.name || 'Not found';
+  };
+
+  const siteHeaders = [
     {
       id: 'name',
       numeric: false,
@@ -39,6 +50,59 @@ export default function Dashboard() {
     name: site.name,
     code: site.short,
   }));
+
+  const segmentHeaders = [
+    {
+      id: 'segment',
+      numeric: false,
+      disablePadding: false,
+      text: 'From - To',
+      sort: true,
+    },
+    // {
+    //   id: 'sites',
+    //   numeric: false,
+    //   disablePadding: false,
+    //   text: 'Sites',
+    //   sort: true,
+    // },
+    {
+      id: 'length',
+      numeric: false,
+      disablePadding: false,
+      text: 'Length (m)',
+      sort: true,
+    },
+  ];
+  const segmentItems = segments.map(segment => ({
+    id: segment.id,
+    segment: `${getSiteCodeById(segment.startSiteId)} -> ${getSiteCodeById(segment.endSiteId)}`,
+    // sites: `${getSiteNameById(segment.startSiteId)} --> ${getSiteNameById(segment.endSiteId)}`,
+    length: segment.length,
+  }));
+
+  const ladHeaders = [
+    {
+      id: 'name',
+      numeric: false,
+      disablePadding: false,
+      text: 'LAD name',
+      sort: true,
+    },
+    {
+      id: 'sites',
+      numeric: false,
+      disablePadding: false,
+      text: 'Sites',
+      sort: true,
+    },
+  ];
+  const ladItems = lads.map(lad => ({
+    id: lad.id,
+    name: `${getSiteNameById(lad.siteIds[0])} - ${getSiteNameById(lad.siteIds[lad.siteIds.length - 1])}`,
+    sites: lad.siteIds.length,
+  }));
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Grid container spacing={3} sx={{ height: '83vh' }}>
@@ -56,15 +120,15 @@ export default function Dashboard() {
           >
             <SimpleTable 
               title='Sites'
-              headers={sitesHeaders}
+              headers={siteHeaders}
               items={siteItems}
             />
           </Paper>
         </Grid>
-        {/* Sites */}
+        {/* Segments */}
         <Grid item sm={12} md={4}>
           <Paper
-            onClick={() => router.push(sitesRoute)}
+            onClick={() => router.push(segmentsRoute)}
             sx={{
               p: 2,
               display: 'flex',
@@ -74,16 +138,16 @@ export default function Dashboard() {
             }}
           >
             <SimpleTable 
-              title='Sites'
-              headers={sitesHeaders}
-              items={siteItems}
+              title='Segments'
+              headers={segmentHeaders}
+              items={segmentItems}
             />
           </Paper>
         </Grid>
-        {/* Sites */}
+        {/* LADs */}
         <Grid item sm={12} md={4}>
           <Paper
-            onClick={() => console.log('Sites Clicked')}
+            onClick={() => router.push(ladsRoute)}
             sx={{
               p: 2,
               display: 'flex',
@@ -93,9 +157,9 @@ export default function Dashboard() {
             }}
           >
             <SimpleTable 
-              title='Sites'
-              headers={sitesHeaders}
-              items={siteItems}
+              title='LADs'
+              headers={ladHeaders}
+              items={ladItems}
             />
           </Paper>
         </Grid>

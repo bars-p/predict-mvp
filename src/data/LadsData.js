@@ -10,5 +10,10 @@ export default function getLadsData() {
     siteIds: [2, 4, 1, 5, 3],
     segmentIds: [4, 5, 6, 7]
   },
+  {
+    id: 3,
+    siteIds: [11, 4, 1, 5, 3],
+    segmentIds: [4, 5, 6, 7]
+  },
  ];
 }

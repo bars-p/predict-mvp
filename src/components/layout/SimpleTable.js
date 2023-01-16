@@ -165,6 +165,7 @@ export default function SimpleTable(props) {
   // }));
 
   const handleRequestSort = (event, property) => {
+    event.stopPropagation();
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);

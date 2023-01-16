@@ -1,5 +1,7 @@
 import React, { useState, createContext } from 'react';
 import getSitesData from '../data/SitesData';
+import getSegmentsData from '../data/SegmentsData';
+import getLadsData from '../data/LadsData';
 
 export const DataContext = createContext();
 
@@ -21,8 +23,16 @@ const DataContextProvider = ({ children }) => {
     }));
   };
 
+  const [segments, setSegments] = useState(getSegmentsData());
+
+  const [lads, setLads] = useState(getLadsData());
+
   return (
-    <DataContext.Provider value={{ sites, deleteSite, addSite, updateSite }}>
+    <DataContext.Provider value={{ 
+      sites, deleteSite, addSite, updateSite, 
+      segments,
+      lads,
+    }}>
       {children}
     </DataContext.Provider>
   );

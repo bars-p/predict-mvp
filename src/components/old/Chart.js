@@ -50,7 +50,7 @@ export default function Chart() {
 
   return (
     <React.Fragment>
-      <Title>Today</Title>
+      <Title>Trip Statistics</Title>
       <ResponsiveContainer>
         <ScatterChart
           data={data}

@@ -42,5 +42,11 @@ export default function getSegmentsData() {
     endSiteId: 3,
     length: 2300,
   },
+  {
+    id: 8,
+    startSiteId: 15,
+    endSiteId: 13,
+    length: 2300,
+  },
  ];
 }
