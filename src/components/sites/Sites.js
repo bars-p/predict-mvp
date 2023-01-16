@@ -22,6 +22,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 import Title from '../layout/Title';
 import { DataContext } from '../../contexts/DataContext';
+import EditDialog from './EditDialog';
 
 const mdTheme = createTheme();
 
@@ -225,6 +226,7 @@ EnhancedTableHeader.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
+  const { onAdd } = props;
   return (
     <Toolbar
       sx={{
@@ -235,7 +237,7 @@ function EnhancedTableToolbar(props) {
       <Title>{props.children}</Title>
       <div className='spacer'></div>
       <Tooltip title="Add">
-        <IconButton size='large' onClick={() => console.log('Add button clicked')}>
+        <IconButton size='large' onClick={onAdd}>
           <AddCircleIcon fontSize='inherit' />
         </IconButton>
       </Tooltip>
@@ -245,11 +247,14 @@ function EnhancedTableToolbar(props) {
 
 EnhancedTableToolbar.propTypes = {
   children: PropTypes.node,
+  onAdd: PropTypes.func,
 };
 
-function EnhancedTable() {
+function EnhancedTable(props) {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('name');
+
+  const { onEdit } = props;
 
   const { sites, deleteSite } = useContext(DataContext);
   const tableData = sites.map( site => ({
@@ -289,7 +294,7 @@ function EnhancedTable() {
                 <IconButton 
                   size='small'
                   sx={{ ml: 1 }}
-                  onClick={() => console.log('Edit item:', row.id, row.name)}
+                  onClick={() => onEdit(row.id)}
                 >
                   <EditIcon 
                     fontSize='inherit' 
@@ -316,26 +321,86 @@ function EnhancedTable() {
 };
 
 export default function Sites() {
-  const { sites } = useContext(DataContext);
+  const getDefaultItem = () => ({
+    id: undefined,
+    name: '',
+    short: '',
+    ladsList: [],
+    point: [0, 0],
+  });
+  const getItemById = (id) => {
+    let item = sites.find(site => site.id == id);
+    if (item == undefined) {
+      item = getDefaultItem();
+    }
+    return item;
+  };
+  const getNextId = () => {
+    const ids = sites.map(site => site.id);
+    return Math.max(...ids) + 1;
+  };
+  const processClose = (saveItem) => {
+    if (saveItem) {
+      if (item.name && item.short) {
+        if (item.id) {
+          updateSite(item);
+        } else {
+          const newItem = { ...item, id: getNextId() };
+          addSite(newItem);
+        }
+      } else {
+        console.error('Incomplete Object Passed', item);
+      }
+    }
+    setOpen(false);
+  };
+
+  const { sites, addSite, updateSite } = useContext(DataContext);
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState('Dialog Title');
+  const [item, setItem] = useState(getDefaultItem());
+
+
   return (
     <ThemeProvider theme={mdTheme}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Paper 
-                sx={{ 
-                  p: 2, 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  maxHeight: '83vh' 
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Paper 
+            sx={{ 
+              p: 2, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              maxHeight: '83vh' 
+            }}
+          >
+            <EnhancedTableToolbar 
+              onAdd={() => {
+                setTitle('Add Site');
+                setItem(getDefaultItem())
+                setOpen(true);
+              }}
+            >
+              Sites ({sites.length})
+            </EnhancedTableToolbar>
+            <TableContainer>
+              <EnhancedTable
+                onEdit={(id) => {
+                  setTitle('Edit Site');
+                  setItem(getItemById(id)); 
+                  setOpen(true);
                 }}
-              >
-                <EnhancedTableToolbar>Sites ({sites.length})</EnhancedTableToolbar>
-                <TableContainer>
-                  <EnhancedTable />
-                </TableContainer>
-              </Paper>
-            </Grid>
-          </Grid>
-  </ThemeProvider>
+              />
+            </TableContainer>
+          </Paper>
+        </Grid>
+      </Grid>
+      <EditDialog 
+        open={open} 
+        title={title} 
+        item={item} 
+        setItem={setItem} 
+        onClose={processClose} 
+      />
+    </ThemeProvider>
   );
 }
