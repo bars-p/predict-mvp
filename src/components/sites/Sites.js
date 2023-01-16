@@ -8,6 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import { DataContext } from '../../contexts/DataContext';
 import EditDialog from './EditDialog';
 import { EnhancedTableToolbar, EnhancedTable } from './DataTable';
+import Info from '../layout/Info';
 
 const mdTheme = createTheme();
 
@@ -35,22 +36,32 @@ export default function Sites() {
       if (item.name && item.short) {
         if (item.id) {
           updateSite(item);
+          showInfo('success', 'Item Updated');
         } else {
           const newItem = { ...item, id: getNextId() };
           addSite(newItem);
+          showInfo('success', 'Item Added');
         }
       } else {
         console.error('Incomplete Object Passed', item);
+        showInfo('error', 'Data Error');
       }
     }
     setOpen(false);
+  };
+  const showInfo = (severity, text) => {
+    setInfoText(text);
+    setInfoSeverity(severity);
+    setOpenInfo(true);
   };
 
   const { sites, addSite, updateSite, deleteSite } = useContext(DataContext);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('Dialog Title');
   const [item, setItem] = useState(getDefaultItem());
-
+  const [openInfo, setOpenInfo] = useState(false);
+  const [infoText, setInfoText] = useState('');
+  const [infoSeverity, setInfoSeverity] = useState('info')
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -93,6 +104,12 @@ export default function Sites() {
         item={item} 
         setItem={setItem} 
         onClose={processClose} 
+      />
+      <Info 
+        open={openInfo}
+        setOpen={setOpenInfo}
+        text={infoText}
+        severity={infoSeverity}
       />
     </ThemeProvider>
   );
