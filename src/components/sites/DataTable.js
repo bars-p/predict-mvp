@@ -181,7 +181,7 @@ export function EnhancedTable(props) {
           .map((row, index) => (
           <TableRow key={row.id} hover>
             <TableCell align='right' padding='none'>{index+1}</TableCell>
-            <TableCell  sx={{ py: 1 }}>{row.name}</TableCell>
+            <TableCell sx={{ py: 1 }}>{row.name}</TableCell>
             <TableCell sx={{ py: 1 }}>{row.code}</TableCell>
             <TableCell sx={{ py: 1 }}>{row.ladsNumber}</TableCell>
             <TableCell sx={{ py: 1 }}>{row.ladsName}</TableCell>

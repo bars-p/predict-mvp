@@ -18,7 +18,7 @@ export default function Info(props) {
       case 'error':
         return 'Error';
       case 'warning':
-        return 'Warning';
+        return 'Warning`';
       default:
         return 'Info';
     }
