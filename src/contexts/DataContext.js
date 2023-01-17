@@ -22,15 +22,24 @@ const DataContextProvider = ({ children }) => {
       }
     }));
   };
-
+  
   const [segments, setSegments] = useState(getSegmentsData());
+  const updateSegment = (item) => {
+    setSegments(segments.map(segment => {
+      if (segment.id == item.id) {
+        return item;
+      } else {
+        return segment;
+      }
+    }));
+  };
 
   const [lads, setLads] = useState(getLadsData());
 
   return (
     <DataContext.Provider value={{ 
       sites, deleteSite, addSite, updateSite, 
-      segments,
+      segments, updateSegment,
       lads,
     }}>
       {children}
