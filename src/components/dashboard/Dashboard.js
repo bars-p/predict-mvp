@@ -56,7 +56,7 @@ export default function Dashboard() {
       id: 'segment',
       numeric: false,
       disablePadding: false,
-      text: 'From - To',
+      text: 'Direction',
       sort: true,
     },
     // {
@@ -76,12 +76,19 @@ export default function Dashboard() {
   ];
   const segmentItems = segments.map(segment => ({
     id: segment.id,
-    segment: `${getSiteCodeById(segment.startSiteId)} -> ${getSiteCodeById(segment.endSiteId)}`,
+    segment: `${getSiteCodeById(segment.startSiteId)} –> ${getSiteCodeById(segment.endSiteId)}`,
     // sites: `${getSiteNameById(segment.startSiteId)} --> ${getSiteNameById(segment.endSiteId)}`,
     length: segment.length,
   }));
 
   const ladHeaders = [
+    {
+      id: 'code',
+      numeric: false,
+      disablePadding: false,
+      text: 'Code',
+      sort: true,
+    },
     {
       id: 'name',
       numeric: false,
@@ -89,18 +96,19 @@ export default function Dashboard() {
       text: 'LAD name',
       sort: true,
     },
-    {
-      id: 'sites',
-      numeric: false,
-      disablePadding: false,
-      text: 'Sites',
-      sort: true,
-    },
+    // {
+    //   id: 'sites',
+    //   numeric: false,
+    //   disablePadding: false,
+    //   text: 'Sites',
+    //   sort: true,
+    // },
   ];
   const ladItems = lads.map(lad => ({
     id: lad.id,
+    code: lad.code,
     name: `${getSiteNameById(lad.siteIds[0])} - ${getSiteNameById(lad.siteIds[lad.siteIds.length - 1])}`,
-    sites: lad.siteIds.length,
+    // sites: lad.siteIds.length,
   }));
 
   return (

@@ -199,6 +199,7 @@ export function EnhancedTable(props) {
               </Tooltip>
               <Tooltip title='Delete'>
                 <IconButton 
+                  disabled={row.ladsNumber}
                   size='small' 
                   sx={{ ml: 1 }}
                   onClick={() => deleteItem(row.id)}

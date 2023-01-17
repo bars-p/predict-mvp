@@ -44,7 +44,7 @@ export default function Sites() {
         }
       } else {
         console.error('Incomplete Object Passed', item);
-        showInfo('error', 'Data Error');
+        showInfo('error', 'Incomplete data provided');
       }
     }
     setOpen(false);
