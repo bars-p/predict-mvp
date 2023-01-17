@@ -16,51 +16,6 @@ import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 import Title from '../layout/Title';
 
-const tableHeaders = [
-  {
-    id: 'number',
-    numeric: true,
-    disablePadding: true,
-    text: '#',
-    sort: false,
-  },
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: false,
-    text: 'Site Name',
-    sort: true,
-  },
-  {
-    id: 'code',
-    numeric: false,
-    disablePadding: false,
-    text: 'Site Code',
-    sort: true,
-  },
-  {
-    id: 'ladsNumber',
-    numeric: false,
-    disablePadding: false,
-    text: 'LADs Passed',
-    sort: true,
-  },
-  {
-    id: 'ladsName',
-    numeric: false,
-    disablePadding: false,
-    text: 'LADs Names',
-    sort: false,
-  },
-  {
-    id: 'action',
-    numeric: false,
-    disablePadding: false,
-    text: '',
-    sort: false,
-  },
-];
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -78,7 +33,7 @@ function getComparator(order, orderBy) {
 }
 
 function EnhancedTableHeader(props) {
-  const { order, orderBy, onRequestSort } = props;
+  const { order, orderBy, onRequestSort, headers } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -86,7 +41,7 @@ function EnhancedTableHeader(props) {
   return (
     <TableHead>
       <TableRow>
-        {tableHeaders.map(headCell => (
+        {headers.map(headCell => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
@@ -120,6 +75,7 @@ EnhancedTableHeader.propTypes = {
   onRequestSort: PropTypes.func.isRequired,
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
   orderBy: PropTypes.string.isRequired,
+  headers: PropTypes.array.isRequired,
 };
 
 export function EnhancedTableToolbar(props) {
@@ -151,16 +107,7 @@ export function EnhancedTable(props) {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('name');
 
-  const { onEdit, items, deleteItem } = props;
-
-  const tableData = items.map( site => ({
-    id: site.id,
-    name: site.name,
-    code: site.short,
-    ladsNumber: site.ladsList.length,
-    ladsName: site.ladsList.join(', '),
-    action: null,
-  }));
+  const { onEdit, headers, items, deleteItem } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -174,9 +121,10 @@ export function EnhancedTable(props) {
         order={order}
         orderBy={orderBy}
         onRequestSort={handleRequestSort}
+        headers={headers}
       />
       <TableBody>
-        {tableData
+        {items
           .sort(getComparator(order, orderBy))
           .map((row, index) => (
           <TableRow key={row.id} hover>

@@ -12,6 +12,8 @@ import Info from '../layout/Info';
 
 const mdTheme = createTheme();
 
+
+
 export default function Sites() {
   const getDefaultItem = () => ({
     id: undefined,
@@ -63,6 +65,61 @@ export default function Sites() {
   const [infoText, setInfoText] = useState('');
   const [infoSeverity, setInfoSeverity] = useState('info')
 
+  const tableHeaders = [
+    {
+      id: 'number',
+      numeric: true,
+      disablePadding: true,
+      text: '#',
+      sort: false,
+    },
+    {
+      id: 'name',
+      numeric: false,
+      disablePadding: false,
+      text: 'Site Name',
+      sort: true,
+    },
+    {
+      id: 'code',
+      numeric: false,
+      disablePadding: false,
+      text: 'Site Code',
+      sort: true,
+    },
+    {
+      id: 'ladsNumber',
+      numeric: false,
+      disablePadding: false,
+      text: 'LADs Passed',
+      sort: true,
+    },
+    {
+      id: 'ladsName',
+      numeric: false,
+      disablePadding: false,
+      text: 'LADs Names',
+      sort: false,
+    },
+    {
+      id: 'action',
+      numeric: false,
+      disablePadding: false,
+      text: '',
+      sort: false,
+    },
+  ];
+  
+  const tableData = sites.map(site => ({
+    id: site.id,
+    name: site.name,
+    code: site.short,
+    ladsNumber: site.ladsList.length,
+    ladsName: site.ladsList.join(', '),
+    action: null,
+  }));
+
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Grid container spacing={3}>
@@ -91,7 +148,8 @@ export default function Sites() {
                   setItem(getItemById(id)); 
                   setOpen(true);
                 }}
-                items={sites}
+                headers={tableHeaders}
+                items={tableData}
                 deleteItem={deleteSite}
               />
             </TableContainer>
