@@ -55,7 +55,7 @@ export default function Segments() {
       if (tableItem.id && tableItem.length > 0) {
         updateSegment({
           ...item,
-          length: tableItem.length,
+          length: +tableItem.length,
         }); 
         showInfo('success', 'Item Updated');
       } else {

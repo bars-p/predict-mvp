@@ -12,39 +12,48 @@ import Info from '../layout/Info';
 
 const mdTheme = createTheme();
 
-export default function Sites() {
+export default function Lads() {
   const getDefaultItem = () => ({
     id: undefined,
-    name: '',
-    short: '',
-    ladsList: [],
-    point: [0, 0],
+    code: '',
+    siteIds: [],
+    segmentIds: [],
   });
   const getItemById = (id) => {
-    let item = sites.find(site => site.id == id);
+    let item = lads.find(site => site.id == id);
     if (item == undefined) {
       item = getDefaultItem();
     }
     return item;
   };
   const getNextId = () => {
-    const ids = sites.map(site => site.id);
+    const ids = lads.map(site => site.id);
     return Math.max(...ids) + 1;
   };
-  const processClose = (saveItem) => {
+  // TODO:
+  // FIXME: Check Segments, create new, make inactive not used
+  const processClose = (saveItem) => { 
     if (saveItem) {
-      if (item.name && item.short) {
+      if (item.code && item.siteIds.length >= 2) {
         if (item.id) {
-          updateSite(item);
+          // TODO: Create SegmentIDS from SiteIds
+          // TODO: Create new Segments when needed
+          // TODO: Update Site's LadIds
+          // updateLad(item);
+          console.log('Update LAD:', item);
           showInfo('success', 'Item Updated');
         } else {
           const newItem = { ...item, id: getNextId() };
-          addSite(newItem);
+          // TODO: Create SegmentIDS from SiteIds
+          // TODO: Create new Segments when needed
+          // TODO: Update Site's LadIds
+          // addLad(newItem);
+          console.log('Add LAD:', newItem);
           showInfo('success', 'Item Added');
         }
       } else {
         console.error('Incomplete Object Passed', item);
-        showInfo('error', 'Incomplete data provided');
+        showInfo('error', 'Incorrect data provided');
       }
     }
     setOpen(false);
@@ -55,13 +64,27 @@ export default function Sites() {
     setOpenInfo(true);
   };
 
-  const { sites, addSite, updateSite, deleteSite } = useContext(DataContext);
+  const { sites, segments, lads, addLad, updateLad, deleteLad } = useContext(DataContext);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('Dialog Title');
   const [item, setItem] = useState(getDefaultItem());
   const [openInfo, setOpenInfo] = useState(false);
   const [infoText, setInfoText] = useState('');
   const [infoSeverity, setInfoSeverity] = useState('info')
+
+  const getSiteNameById = (id) => {
+    return sites.find(site => site.id == id)?.name || 'Not found';
+  };
+
+  const getLadLength = (ladSegmentIds) => {
+    // console.log('Segments:', ladSegmentIds);
+    const length = ladSegmentIds.reduce((acc, cur) => {
+      const segmentLength = segments.find(seg => seg.id == cur)?.length;
+      // console.log(cur, segmentLength);
+      return acc + segmentLength;
+    }, 0);
+    return length;
+  };
 
   const tableHeaders = [
     {
@@ -72,31 +95,38 @@ export default function Sites() {
       sort: false,
     },
     {
-      id: 'name',
-      numeric: false,
-      disablePadding: false,
-      text: 'Site Name',
-      sort: true,
-    },
-    {
       id: 'code',
       numeric: false,
       disablePadding: false,
-      text: 'Site Code',
+      text: 'LAD',
       sort: true,
     },
     {
-      id: 'ladsNumber',
+      id: 'fromSite',
       numeric: false,
       disablePadding: false,
-      text: 'LADs Passed',
+      text: 'From Site',
       sort: true,
     },
     {
-      id: 'ladsName',
+      id: 'toSite',
       numeric: false,
       disablePadding: false,
-      text: 'LADs Names',
+      text: 'To Site',
+      sort: true,
+    },
+    {
+      id: 'sitesNumber',
+      numeric: false,
+      disablePadding: false,
+      text: 'Sites',
+      sort: true,
+    },
+    {
+      id: 'length',
+      numeric: true,
+      disablePadding: false,
+      text: 'LAD Length',
       sort: false,
     },
     {
@@ -108,15 +138,15 @@ export default function Sites() {
     },
   ];
   
-  const tableData = sites.map(site => ({
-    id: site.id,
-    name: site.name,
-    code: site.short,
-    ladsNumber: site.ladsList.length,
-    ladsName: site.ladsList.join(', '),
+  const tableData = lads.map(lad => ({
+    id: lad.id,
+    code: lad.code,
+    fromSite: getSiteNameById(lad.siteIds[0]),
+    toSite: getSiteNameById(lad.siteIds[lad.siteIds.length - 1]),
+    sitesNumber: lad.siteIds.length,
+    length: getLadLength(lad.segmentIds),
     action: null,
   }));
-
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -132,23 +162,23 @@ export default function Sites() {
           >
             <EnhancedTableToolbar 
               onAdd={() => {
-                setTitle('Add Site');
+                setTitle('Add LAD');
                 setItem(getDefaultItem())
                 setOpen(true);
               }}
             >
-              Sites ({sites.length})
+              LADs ({lads.length})
             </EnhancedTableToolbar>
             <TableContainer>
               <EnhancedTable
                 onEdit={(id) => {
-                  setTitle('Edit Site');
+                  setTitle('Edit LAD');
                   setItem(getItemById(id)); 
                   setOpen(true);
                 }}
                 headers={tableHeaders}
                 items={tableData}
-                deleteItem={deleteSite}
+                deleteItem={deleteLad}
               />
             </TableContainer>
           </Paper>

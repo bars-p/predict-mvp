@@ -104,7 +104,7 @@ const configurationItems = [
   {
     text: 'LADs by Sites',
     icon: <HubIcon />,
-    path: '/ladsbysites'
+    path: '/lads'
   },
   {
     text: 'LADs by Segments',

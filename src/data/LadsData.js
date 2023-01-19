@@ -15,8 +15,8 @@ export default function getLadsData() {
   {
     id: 3,
     code: '2-1-1',
-    siteIds: [11, 4, 1, 5, 3],
-    segmentIds: [4, 5, 6, 7]
+    siteIds: [11, 4, 1, 5],
+    segmentIds: [4, 5, 6]
   },
  ];
 }

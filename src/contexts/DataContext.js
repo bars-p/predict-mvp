@@ -35,12 +35,27 @@ const DataContextProvider = ({ children }) => {
   };
 
   const [lads, setLads] = useState(getLadsData());
+  const addLad = (item) => {
+    setLads([...lads, item]);
+  };
+  const deleteLad = (id) => {
+    setLads(lads.filter(lad => lad.id != id));
+  };
+  const updateLad = (item) => {
+    setLads(lads.map(lad => {
+      if (lad.id == item.id) {
+        return item;
+      } else {
+        return lad;
+      }
+    }));
+  };
 
   return (
     <DataContext.Provider value={{ 
       sites, deleteSite, addSite, updateSite, 
       segments, updateSegment,
-      lads,
+      lads, addLad, deleteLad, updateLad,
     }}>
       {children}
     </DataContext.Provider>

@@ -129,10 +129,11 @@ export function EnhancedTable(props) {
           .map((row, index) => (
           <TableRow key={row.id} hover>
             <TableCell align='right' padding='none'>{index+1}</TableCell>
-            <TableCell sx={{ py: 1 }}>{row.name}</TableCell>
             <TableCell sx={{ py: 1 }}>{row.code}</TableCell>
-            <TableCell sx={{ py: 1 }}>{row.ladsNumber}</TableCell>
-            <TableCell sx={{ py: 1 }}>{row.ladsName}</TableCell>
+            <TableCell sx={{ py: 1 }}>{row.fromSite}</TableCell>
+            <TableCell sx={{ py: 1 }}>{row.toSite}</TableCell>
+            <TableCell sx={{ py: 1 }}>{row.sitesNumber}</TableCell>
+            <TableCell align='right' padding='none' sx={{ py: 1 }}>{row.length}</TableCell>
             <TableCell align='right' sx={{ py: 1 }}>
               <Tooltip title='Edit'>
                 <IconButton 
@@ -146,18 +147,15 @@ export function EnhancedTable(props) {
                 </IconButton>
               </Tooltip>
               <Tooltip title='Delete'>
-                <span>
-                  <IconButton 
-                    disabled={row.ladsNumber > 0}
-                    size='small' 
-                    sx={{ ml: 1 }}
-                    onClick={() => deleteItem(row.id)}
-                  >
-                    <DeleteIcon 
-                      fontSize='inherit' 
-                      />
-                  </IconButton>
-                </span>
+                <IconButton 
+                  size='small' 
+                  sx={{ ml: 1 }}
+                  onClick={() => deleteItem(row.id)}
+                >
+                  <DeleteIcon 
+                    fontSize='inherit' 
+                    />
+                </IconButton>
               </Tooltip>
             </TableCell>
           </TableRow>
