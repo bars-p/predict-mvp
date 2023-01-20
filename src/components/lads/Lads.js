@@ -39,7 +39,7 @@ export default function Lads() {
           // TODO: Create SegmentIDS from SiteIds
           // TODO: Create new Segments when needed
           // TODO: Update Site's LadIds
-          // updateLad(item);
+          updateLad(item);
           console.log('Update LAD:', item);
           showInfo('success', 'Item Updated');
         } else {
@@ -47,7 +47,7 @@ export default function Lads() {
           // TODO: Create SegmentIDS from SiteIds
           // TODO: Create new Segments when needed
           // TODO: Update Site's LadIds
-          // addLad(newItem);
+          addLad(newItem);
           console.log('Add LAD:', newItem);
           showInfo('success', 'Item Added');
         }
