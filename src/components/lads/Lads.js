@@ -7,6 +7,7 @@ import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
 import { DataContext } from '../../contexts/DataContext';
 import EditDialog from './EditDialog';
+import HeadwaysDialog from './HeadwaysDialog';
 import { EnhancedTableToolbar, EnhancedTable } from './DataTable';
 import Info from '../layout/Info';
 
@@ -55,7 +56,6 @@ export default function Lads() {
           length: 0,
           speed: config.defaultSpeed,
         };
-        console.warn('New Segment:', newSegment);
         newSegmentsCreated.push({...newSegment});
         newSegmentCount++;
         segmentIdsFound.push(newSegment.id);
@@ -86,6 +86,14 @@ export default function Lads() {
     }
     setOpen(false);
   };
+
+  const processHeadways = (saveItem) => {
+    if (saveItem) {
+      updateLad(item);
+    }
+    setOpenHeadways(false);
+  };
+
   const showInfo = (severity, text) => {
     setInfoText(text);
     setInfoSeverity(severity);
@@ -96,6 +104,8 @@ export default function Lads() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('Dialog Title');
   const [item, setItem] = useState(getDefaultItem());
+  const [openHeadways, setOpenHeadways] = useState(false);
+  const [headwaysTitle, setHeadwaysTitle] = useState('Edit Headways');
   const [openInfo, setOpenInfo] = useState(false);
   const [infoText, setInfoText] = useState('');
   const [infoSeverity, setInfoSeverity] = useState('info')
@@ -105,10 +115,8 @@ export default function Lads() {
   };
 
   const getLadLength = (ladSegmentIds) => {
-    // console.log('Segments:', ladSegmentIds);
     const length = ladSegmentIds.reduce((acc, cur) => {
       const segmentLength = segments.find(seg => seg.id == cur)?.length;
-      // console.log(cur, segmentLength);
       return acc + segmentLength;
     }, 0);
     return length;
@@ -212,7 +220,10 @@ export default function Lads() {
                   setItem(getItemById(id)); 
                   setOpen(true);
                 }}
-                onHeadways={(id) => console.log('Headways Edit for:', id)}
+                onHeadways={(id) => {
+                  setItem(getItemById(id)); 
+                  setOpenHeadways(true);
+                }}
                 headers={tableHeaders}
                 items={tableData}
                 deleteItem={deleteLad}
@@ -227,6 +238,13 @@ export default function Lads() {
         item={item} 
         setItem={setItem} 
         onClose={processClose} 
+      />
+      <HeadwaysDialog 
+        open={openHeadways}
+        title={headwaysTitle}
+        item={item}
+        setItem={setItem}
+        onClose={processHeadways}
       />
       <Info 
         open={openInfo}

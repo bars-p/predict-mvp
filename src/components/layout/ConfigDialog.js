@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
 
-export default function EditDialog(props) {
+export default function ConfigDialog(props) {
   const { open, onClose, title, item, setItem } = props;
 
   const handleClose = () => {
