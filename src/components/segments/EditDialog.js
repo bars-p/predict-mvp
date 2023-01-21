@@ -8,12 +8,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import { width } from '@mui/system';
 
 export default function EditDialog(props) {
   const { open, onClose, title, item, setItem } = props;
 
   const handleClose = () => {
-    console.log(item);
     onClose(false);
   };
 
@@ -26,7 +26,8 @@ export default function EditDialog(props) {
       <Dialog 
         open={open} 
         onClose={handleClose}
-        PaperProps={{sx: {width: 700}}}
+        PaperProps={{sx: {minWidth: 700 },}}
+        fullWidth
       >
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
@@ -36,12 +37,25 @@ export default function EditDialog(props) {
                 {item.direction}
               </Typography>
             </Grid>
-            <Grid item xs={7}>
+            <Grid item xs={6}>
               <Typography sx={{ mt: 3}}>
                 {item.sites}
               </Typography>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
+              <TextField 
+                margin="dense"
+                id="speed"
+                label="Free Speed"
+                type="number"
+                min="0"
+                variant="standard"
+                value={item.speed}
+                onChange={(e) => setItem({ ...item, speed: e.target.value })}
+                inputProps={{ min: 0 }}
+              />
+            </Grid>
+            <Grid item xs={2}>
               <TextField 
                 margin="dense"
                 id="short"

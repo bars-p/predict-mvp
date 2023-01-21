@@ -26,29 +26,55 @@ export default function Lads() {
     }
     return item;
   };
-  const getNextId = () => {
-    const ids = lads.map(site => site.id);
+  const getNextId = (items) => {
+    const ids = items.map(item => item.id);
     return Math.max(...ids) + 1;
   };
-  // TODO:
-  // FIXME: Check Segments, create new, make inactive not used
+  const checkSegments = (siteIds) => {
+    if (siteIds.length < 2) {
+      return [];
+    }
+    let segmentIdsFound = [];
+    let newSegmentsCreated = [];
+    let newSegmentCount = 0;
+    for (let i = 0; i < siteIds.length - 1; i++) {
+      const startId = siteIds[i];
+      const endId = siteIds[i + 1];
+      const [segment] = segments
+        .filter(segment => segment.startSiteId == startId)
+        ?.filter(segment => segment.endSiteId == endId);
+      if (segment) {
+        segmentIdsFound.push(segment.id);
+      } else {
+        const newSegment = {
+          id: getNextId(segments) + newSegmentCount,
+          startSiteId: startId,
+          endSiteId: endId,
+          length: 0,
+          speed: config.defaultSpeed,
+        };
+        console.warn('New Segment:', newSegment);
+        newSegmentsCreated.push({...newSegment});
+        newSegmentCount++;
+        segmentIdsFound.push(newSegment.id);
+      }
+    }
+    addSegments(newSegmentsCreated);
+    return segmentIdsFound;
+  };
+
   const processClose = (saveItem) => { 
     if (saveItem) {
       if (item.code && item.siteIds.length >= 2) {
         if (item.id) {
-          // TODO: Create SegmentIDS from SiteIds
-          // TODO: Create new Segments when needed
-          // TODO: Update Site's LadIds
-          updateLad(item);
-          console.log('Update LAD:', item);
+          const ladSegments = checkSegments(item.siteIds); 
+          const newItem = {...item, segmentIds: [...ladSegments]};
+          updateLad(newItem);
           showInfo('success', 'Item Updated');
         } else {
-          const newItem = { ...item, id: getNextId() };
-          // TODO: Create SegmentIDS from SiteIds
-          // TODO: Create new Segments when needed
-          // TODO: Update Site's LadIds
+          const ladSegments = checkSegments(item.siteIds); 
+          const newItem = { ...item, id: getNextId(lads), segmentIds: [...ladSegments] };
           addLad(newItem);
-          console.log('Add LAD:', newItem);
           showInfo('success', 'Item Added');
         }
       } else {
@@ -64,7 +90,7 @@ export default function Lads() {
     setOpenInfo(true);
   };
 
-  const { sites, segments, lads, addLad, updateLad, deleteLad } = useContext(DataContext);
+  const { config, sites, segments, addSegment, addSegments, lads, addLad, updateLad, deleteLad } = useContext(DataContext);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('Dialog Title');
   const [item, setItem] = useState(getDefaultItem());
@@ -163,7 +189,7 @@ export default function Lads() {
             <EnhancedTableToolbar 
               onAdd={() => {
                 setTitle('Add LAD');
-                setItem(getDefaultItem())
+                setItem(getDefaultItem());
                 setOpen(true);
               }}
             >

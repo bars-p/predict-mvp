@@ -24,36 +24,18 @@ export default function EditDialog(props) {
       <Dialog 
         open={open} 
         onClose={handleClose}
-        PaperProps={{sx: {minWidth: 700}}}
+        PaperProps={{sx: {minWidth: 400}}}
       >
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
-          <Grid container spacing={3}>
-            <Grid item xs={10}>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="site"
-                label="Site Name"
-                type="text"
-                variant="standard"
-                fullWidth
-                value={item.name}
-                onChange={(e) => setItem({ ...item, name: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <TextField 
-                margin="dense"
-                id="short"
-                label="Site Code"
-                type="text"
-                variant="standard"
-                value={item.short}
-                onChange={(e) => setItem({ ...item, short: e.target.value })}
-              />
-            </Grid>
-          </Grid>
+          <DialogContentText>
+            Default Speed: <strong>{item.defaultSpeed}</strong>
+            {item.dayPeriodCoefficients.map(coefficient => (
+              <div key={coefficient.fromTime}>
+                From time: <strong>{coefficient.fromTime}</strong>, Value: <strong>{coefficient.value}</strong>
+              </div>
+            ))}
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

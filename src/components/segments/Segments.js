@@ -18,6 +18,7 @@ export default function Segments() {
     startSiteId: undefined,
     endSiteId: undefined,
     length: 0,
+    speed: config.defaultSpeed,
   });
   const getItemById = (id) => {
     let item = segments.find(segment => segment.id == id);
@@ -31,6 +32,7 @@ export default function Segments() {
       direction: '? –> ?',
       sites: 'Data not found',
       length: 0,
+      speed: 0,
       action: null,
   });
  
@@ -55,6 +57,7 @@ export default function Segments() {
       if (tableItem.id && tableItem.length > 0) {
         updateSegment({
           ...item,
+          speed: +tableItem.speed,
           length: +tableItem.length,
         }); 
         showInfo('success', 'Item Updated');
@@ -72,7 +75,7 @@ export default function Segments() {
     setOpenInfo(true);
   };
 
-  const { sites, segments, updateSegment } = useContext(DataContext);
+  const { config, sites, segments, updateSegment } = useContext(DataContext);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('Dialog Title');
   const [item, setItem] = useState(getDefaultItem());
@@ -111,6 +114,13 @@ export default function Segments() {
       sort: true,
     },
     {
+      id: 'speed',
+      numeric: true,
+      disablePadding: false,
+      text: 'Free Speed',
+      sort: true,
+    },
+    {
       id: 'action',
       numeric: false,
       disablePadding: false,
@@ -124,6 +134,7 @@ export default function Segments() {
     direction: `${getSiteCodeById(segment.startSiteId)} –> ${getSiteCodeById(segment.endSiteId)}`,
     sites: `${getSiteNameById(segment.startSiteId)} – ${getSiteNameById(segment.endSiteId)}`,
     length: segment.length,
+    speed: segment.speed,
     action: null,
   }));
 
@@ -146,7 +157,7 @@ export default function Segments() {
             <TableContainer>
               <EnhancedTable
                 onEdit={(id) => {
-                  setTitle('Edit Segment Length');
+                  setTitle('Edit Segment Data');
                   setItem(getItemById(id));
                   setTableItem(getTableItem(id)); 
                   setOpen(true);

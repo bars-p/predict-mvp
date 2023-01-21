@@ -19,7 +19,7 @@ import IconButton from '@mui/material/IconButton';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
-import { blue, lightBlue, grey } from '@mui/material/colors'
+import { blue, grey } from '@mui/material/colors'
 import { border, Box } from '@mui/system';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { DataContext } from '../../contexts/DataContext';
@@ -101,7 +101,7 @@ export default function EditDialog(props) {
       <Dialog 
         open={open} 
         onClose={handleClose}
-        PaperProps={{sx: {width: 700}}}
+        PaperProps={{sx: {minWidth: 700}}}
       >
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>

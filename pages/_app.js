@@ -18,11 +18,11 @@ export default function App({ Component, pageProps }) {
         <title>Prediction App</title>
       </Head>
       <main>
-        <Layout>
-          <DataContextProvider>
+        <DataContextProvider>
+          <Layout>
             <Component {...pageProps} />
-          </DataContextProvider>
-        </Layout>
+          </Layout>
+        </DataContextProvider>
       </main>
     </>
   );

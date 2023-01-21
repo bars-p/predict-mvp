@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,6 +15,7 @@ import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import SettingsIcon from '@mui/icons-material/Settings';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -30,6 +31,8 @@ import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import DepartureBoardIcon from '@mui/icons-material/DepartureBoard';
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import AutoModeIcon from '@mui/icons-material/AutoMode';
+import ConfigDialog from './ConfigDialog';
+import { DataContext } from '../../contexts/DataContext';
 import { blue } from '@mui/material/colors';
 
 const drawerWidth = 240;
@@ -97,14 +100,14 @@ const configurationItems = [
     path: '/sites'
   },
   {
+    text: 'LADs',
+    icon: <HubIcon />,
+    path: '/lads'
+  },
+  {
     text: 'Segments',
     icon: <PolylineIcon />,
     path: '/segments'
-  },
-  {
-    text: 'LADs by Sites',
-    icon: <HubIcon />,
-    path: '/lads'
   },
   {
     text: 'LADs by Segments',
@@ -145,13 +148,18 @@ const predictionItems = [
 ];
 
 export default function Layout({ children }) {
-  const [open, setOpen] = React.useState(true);
+  const { config } = useContext(DataContext);
+
+  const [open, setOpen] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [item, setItem] = useState(config);
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
   const router = useRouter();
-  console.log(router.pathname); // FIXME:
+  // console.log(router.pathname); // FIXME:
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -188,6 +196,9 @@ export default function Layout({ children }) {
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
               </Badge>
+            </IconButton>
+            <IconButton color="inherit" onClick={() => setOpenDialog(true)}>
+              <SettingsIcon />
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -291,6 +302,13 @@ export default function Layout({ children }) {
           </Container>
         </Box>
       </Box>
+      <ConfigDialog 
+        open={openDialog} 
+        title='Configuration Settings'
+        item={item} 
+        setItem={setItem} 
+        onClose={() => setOpenDialog(false)} 
+      />
     </ThemeProvider>
   );
 }

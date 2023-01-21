@@ -125,6 +125,7 @@ export function EnhancedTable(props) {
             <TableCell sx={{ py: 1 }}>{row.direction}</TableCell>
             <TableCell sx={{ py: 1 }}>{row.sites}</TableCell>
             <TableCell align='right' padding='none' sx={{ py: 1 }}>{row.length}</TableCell>
+            <TableCell align='right' padding='none' sx={{ py: 1 }}>{row.speed}</TableCell>
             <TableCell align='right' sx={{ py: 1 }}>
               <Tooltip title='Edit'>
                 <IconButton 

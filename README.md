@@ -5,8 +5,9 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - React
 - Next.js
 - Context API
-- Reducers (?)
+- ~~Reducers~~
 - Material UI
+- react-beautiful-dnd
 - Recharts
 - EdgeDB (?)
 

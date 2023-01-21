@@ -1,4 +1,5 @@
 import React, { useState, createContext } from 'react';
+import getConfigData from '../data/ConfigData';
 import getSitesData from '../data/SitesData';
 import getSegmentsData from '../data/SegmentsData';
 import getLadsData from '../data/LadsData';
@@ -6,6 +7,8 @@ import getLadsData from '../data/LadsData';
 export const DataContext = createContext();
 
 const DataContextProvider = ({ children }) => {
+  const [config, setConfig] = useState(getConfigData())
+  
   const [sites, setSites] = useState(getSitesData());
   const deleteSite = (id) => {
     setSites(sites.filter(site => site.id != id));
@@ -24,6 +27,12 @@ const DataContextProvider = ({ children }) => {
   };
   
   const [segments, setSegments] = useState(getSegmentsData());
+  const addSegment = (item) => {
+    setSegments([...segments, item]);
+  };
+  const addSegments = (newSegmentsArray) => {
+    setSegments(segments.concat(newSegmentsArray));
+  };
   const updateSegment = (item) => {
     setSegments(segments.map(segment => {
       if (segment.id == item.id) {
@@ -53,8 +62,9 @@ const DataContextProvider = ({ children }) => {
 
   return (
     <DataContext.Provider value={{ 
+      config,
       sites, deleteSite, addSite, updateSite, 
-      segments, updateSegment,
+      segments, addSegment, addSegments, updateSegment,
       lads, addLad, deleteLad, updateLad,
     }}>
       {children}
