@@ -18,6 +18,8 @@ export default function Lads() {
     code: '',
     siteIds: [],
     segmentIds: [],
+    serviceTime: { start: '', end: '', },
+    headways: [],
   });
   const getItemById = (id) => {
     let item = lads.find(site => site.id == id);
@@ -156,6 +158,13 @@ export default function Lads() {
       sort: false,
     },
     {
+      id: 'headways',
+      numeric: false,
+      disablePadding: false,
+      text: 'Headways Set',
+      sort: false,
+    },
+    {
       id: 'action',
       numeric: false,
       disablePadding: false,
@@ -171,6 +180,7 @@ export default function Lads() {
     toSite: getSiteNameById(lad.siteIds[lad.siteIds.length - 1]),
     sitesNumber: lad.siteIds.length,
     length: getLadLength(lad.segmentIds),
+    headways: lad.headways.length > 0,
     action: null,
   }));
 
@@ -202,6 +212,7 @@ export default function Lads() {
                   setItem(getItemById(id)); 
                   setOpen(true);
                 }}
+                onHeadways={(id) => console.log('Headways Edit for:', id)}
                 headers={tableHeaders}
                 items={tableData}
                 deleteItem={deleteLad}

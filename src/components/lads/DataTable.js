@@ -4,7 +4,10 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
+import TuneIcon from '@mui/icons-material/Tune';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -107,7 +110,7 @@ export function EnhancedTable(props) {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('name');
 
-  const { onEdit, headers, items, deleteItem } = props;
+  const { onEdit, onHeadways, headers, items, deleteItem } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -133,7 +136,13 @@ export function EnhancedTable(props) {
             <TableCell sx={{ py: 1 }}>{row.fromSite}</TableCell>
             <TableCell sx={{ py: 1 }}>{row.toSite}</TableCell>
             <TableCell sx={{ py: 1 }}>{row.sitesNumber}</TableCell>
-            <TableCell align='right' padding='none' sx={{ py: 1 }}>{row.length}</TableCell>
+            <TableCell align='right' padding='none' sx={{ py: 1, pr: 2 }}>{row.length}</TableCell>
+            <TableCell sx={{ py: 1 }}>
+              {row.headways 
+                ? <TaskAltIcon fontSize='small' sx={{ mt: 1, ml: 2}} color='success'/> 
+                : <RemoveCircleOutlineIcon fontSize='small' sx={{ mt: 1, ml: 2}} color='error' />
+              }
+            </TableCell>
             <TableCell align='right' sx={{ py: 1 }}>
               <Tooltip title='Edit'>
                 <IconButton 
@@ -142,6 +151,17 @@ export function EnhancedTable(props) {
                   onClick={() => onEdit(row.id)}
                 >
                   <EditIcon 
+                    fontSize='inherit' 
+                    />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title='Headways'>
+                <IconButton 
+                  size='small'
+                  sx={{ ml: 1 }}
+                  onClick={() => onHeadways(row.id)}
+                >
+                  <TuneIcon 
                     fontSize='inherit' 
                     />
                 </IconButton>
