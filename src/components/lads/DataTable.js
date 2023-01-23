@@ -44,15 +44,14 @@ function EnhancedTableHeader(props) {
   return (
     <TableHead>
       <TableRow>
-        {headers.map(headCell => (
+        {headers.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            {headCell.sort 
-            ? (
+            {headCell.sort ? (
               <TableSortLabel
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : 'asc'}
@@ -61,12 +60,15 @@ function EnhancedTableHeader(props) {
                 {headCell.text}
                 {orderBy === headCell.id ? (
                   <Box component='span' sx={visuallyHidden}>
-                    {order === 'desc' ? 'sorted ascending' : 'sorted descending'}
+                    {order === 'desc'
+                      ? 'sorted ascending'
+                      : 'sorted descending'}
                   </Box>
                 ) : null}
-              </TableSortLabel>)
-            : headCell.text
-            }
+              </TableSortLabel>
+            ) : (
+              headCell.text
+            )}
           </TableCell>
         ))}
       </TableRow>
@@ -87,19 +89,19 @@ export function EnhancedTableToolbar(props) {
     <Toolbar
       sx={{
         pl: { sm: 0 },
-        pr: { sm: 1},
+        pr: { sm: 1 },
       }}
     >
       <Title>{props.children}</Title>
       <div className='spacer'></div>
-      <Tooltip title="Add">
+      <Tooltip title='Add'>
         <IconButton size='large' onClick={onAdd}>
           <AddCircleIcon fontSize='inherit' />
         </IconButton>
       </Tooltip>
     </Toolbar>
   );
-};
+}
 
 EnhancedTableToolbar.propTypes = {
   children: PropTypes.node,
@@ -119,62 +121,67 @@ export function EnhancedTable(props) {
   };
 
   return (
-    <Table size="medium" stickyHeader>
-      <EnhancedTableHeader 
+    <Table size='medium' stickyHeader>
+      <EnhancedTableHeader
         order={order}
         orderBy={orderBy}
         onRequestSort={handleRequestSort}
         headers={headers}
       />
       <TableBody>
-        {items
-          .sort(getComparator(order, orderBy))
-          .map((row, index) => (
+        {items.sort(getComparator(order, orderBy)).map((row, index) => (
           <TableRow key={row.id} hover>
-            <TableCell align='right' padding='none'>{index+1}</TableCell>
+            <TableCell align='right' padding='none'>
+              {index + 1}
+            </TableCell>
             <TableCell sx={{ py: 1 }}>{row.code}</TableCell>
             <TableCell sx={{ py: 1 }}>{row.fromSite}</TableCell>
             <TableCell sx={{ py: 1 }}>{row.toSite}</TableCell>
             <TableCell sx={{ py: 1 }}>{row.sitesNumber}</TableCell>
-            <TableCell align='right' padding='none' sx={{ py: 1, pr: 2 }}>{row.length}</TableCell>
-            <TableCell sx={{ py: 1 }}>
-              {row.headways 
-                ? <TaskAltIcon fontSize='small' sx={{ mt: 1, ml: 2}} color='success'/> 
-                : <RemoveCircleOutlineIcon fontSize='small' sx={{ mt: 1, ml: 2}} color='error' />
-              }
+            <TableCell align='right' padding='none' sx={{ py: 1, pr: 2 }}>
+              {row.length}
             </TableCell>
-            <TableCell align='right' sx={{ py: 1 }}>
+            <TableCell sx={{ py: 1 }}>
+              {row.headways && row.serviceTime ? (
+                <TaskAltIcon
+                  fontSize='small'
+                  sx={{ mt: 1, ml: 2 }}
+                  color='success'
+                />
+              ) : (
+                <RemoveCircleOutlineIcon
+                  fontSize='small'
+                  sx={{ mt: 1, ml: 2 }}
+                  color='error'
+                />
+              )}
+            </TableCell>
+            <TableCell align='right' sx={{ py: 1, width: 150 }}>
               <Tooltip title='Edit'>
-                <IconButton 
+                <IconButton
                   size='small'
                   sx={{ ml: 1 }}
                   onClick={() => onEdit(row.id)}
                 >
-                  <EditIcon 
-                    fontSize='inherit' 
-                    />
+                  <EditIcon fontSize='inherit' />
                 </IconButton>
               </Tooltip>
               <Tooltip title='Headways'>
-                <IconButton 
+                <IconButton
                   size='small'
                   sx={{ ml: 1 }}
                   onClick={() => onHeadways(row.id)}
                 >
-                  <TuneIcon 
-                    fontSize='inherit' 
-                    />
+                  <TuneIcon fontSize='inherit' />
                 </IconButton>
               </Tooltip>
               <Tooltip title='Delete'>
-                <IconButton 
-                  size='small' 
+                <IconButton
+                  size='small'
                   sx={{ ml: 1 }}
                   onClick={() => deleteItem(row.id)}
                 >
-                  <DeleteIcon 
-                    fontSize='inherit' 
-                    />
+                  <DeleteIcon fontSize='inherit' />
                 </IconButton>
               </Tooltip>
             </TableCell>
@@ -183,4 +190,4 @@ export function EnhancedTable(props) {
       </TableBody>
     </Table>
   );
-};
+}

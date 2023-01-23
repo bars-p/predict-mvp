@@ -19,18 +19,18 @@ export default function Lads() {
     code: '',
     siteIds: [],
     segmentIds: [],
-    serviceTime: { start: '', end: '', },
+    serviceTime: { start: '', end: '' },
     headways: [],
   });
   const getItemById = (id) => {
-    let item = lads.find(site => site.id == id);
+    let item = lads.find((site) => site.id == id);
     if (item == undefined) {
       item = getDefaultItem();
     }
     return item;
   };
   const getNextId = (items) => {
-    const ids = items.map(item => item.id);
+    const ids = items.map((item) => item.id);
     return Math.max(...ids) + 1;
   };
   const checkSegments = (siteIds) => {
@@ -44,8 +44,8 @@ export default function Lads() {
       const startId = siteIds[i];
       const endId = siteIds[i + 1];
       const [segment] = segments
-        .filter(segment => segment.startSiteId == startId)
-        ?.filter(segment => segment.endSiteId == endId);
+        .filter((segment) => segment.startSiteId == startId)
+        ?.filter((segment) => segment.endSiteId == endId);
       if (segment) {
         segmentIdsFound.push(segment.id);
       } else {
@@ -56,7 +56,7 @@ export default function Lads() {
           length: 0,
           speed: config.defaultSpeed,
         };
-        newSegmentsCreated.push({...newSegment});
+        newSegmentsCreated.push({ ...newSegment });
         newSegmentCount++;
         segmentIdsFound.push(newSegment.id);
       }
@@ -65,17 +65,21 @@ export default function Lads() {
     return segmentIdsFound;
   };
 
-  const processClose = (saveItem) => { 
+  const processClose = (saveItem) => {
     if (saveItem) {
       if (item.code && item.siteIds.length >= 2) {
         if (item.id) {
-          const ladSegments = checkSegments(item.siteIds); 
-          const newItem = {...item, segmentIds: [...ladSegments]};
+          const ladSegments = checkSegments(item.siteIds);
+          const newItem = { ...item, segmentIds: [...ladSegments] };
           updateLad(newItem);
           showInfo('success', 'Item Updated');
         } else {
-          const ladSegments = checkSegments(item.siteIds); 
-          const newItem = { ...item, id: getNextId(lads), segmentIds: [...ladSegments] };
+          const ladSegments = checkSegments(item.siteIds);
+          const newItem = {
+            ...item,
+            id: getNextId(lads),
+            segmentIds: [...ladSegments],
+          };
           addLad(newItem);
           showInfo('success', 'Item Added');
         }
@@ -100,23 +104,32 @@ export default function Lads() {
     setOpenInfo(true);
   };
 
-  const { config, sites, segments, addSegment, addSegments, lads, addLad, updateLad, deleteLad } = useContext(DataContext);
+  const {
+    config,
+    sites,
+    segments,
+    addSegment,
+    addSegments,
+    lads,
+    addLad,
+    updateLad,
+    deleteLad,
+  } = useContext(DataContext);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('Dialog Title');
   const [item, setItem] = useState(getDefaultItem());
   const [openHeadways, setOpenHeadways] = useState(false);
-  const [headwaysTitle, setHeadwaysTitle] = useState('Edit Headways');
   const [openInfo, setOpenInfo] = useState(false);
   const [infoText, setInfoText] = useState('');
-  const [infoSeverity, setInfoSeverity] = useState('info')
+  const [infoSeverity, setInfoSeverity] = useState('info');
 
   const getSiteNameById = (id) => {
-    return sites.find(site => site.id == id)?.name || 'Not found';
+    return sites.find((site) => site.id == id)?.name || 'Not found';
   };
 
   const getLadLength = (ladSegmentIds) => {
     const length = ladSegmentIds.reduce((acc, cur) => {
-      const segmentLength = segments.find(seg => seg.id == cur)?.length;
+      const segmentLength = segments.find((seg) => seg.id == cur)?.length;
       return acc + segmentLength;
     }, 0);
     return length;
@@ -169,8 +182,8 @@ export default function Lads() {
       id: 'headways',
       numeric: false,
       disablePadding: false,
-      text: 'Headways Set',
-      sort: false,
+      text: 'Headways',
+      sort: true,
     },
     {
       id: 'action',
@@ -180,8 +193,8 @@ export default function Lads() {
       sort: false,
     },
   ];
-  
-  const tableData = lads.map(lad => ({
+
+  const tableData = lads.map((lad) => ({
     id: lad.id,
     code: lad.code,
     fromSite: getSiteNameById(lad.siteIds[0]),
@@ -189,6 +202,7 @@ export default function Lads() {
     sitesNumber: lad.siteIds.length,
     length: getLadLength(lad.segmentIds),
     headways: lad.headways.length > 0,
+    serviceTime: lad.serviceTime.start && lad.serviceTime.end,
     action: null,
   }));
 
@@ -196,15 +210,15 @@ export default function Lads() {
     <ThemeProvider theme={mdTheme}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Paper 
-            sx={{ 
-              p: 2, 
-              display: 'flex', 
-              flexDirection: 'column', 
-              maxHeight: '83vh' 
+          <Paper
+            sx={{
+              p: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              maxHeight: '83vh',
             }}
           >
-            <EnhancedTableToolbar 
+            <EnhancedTableToolbar
               onAdd={() => {
                 setTitle('Add LAD');
                 setItem(getDefaultItem());
@@ -217,11 +231,11 @@ export default function Lads() {
               <EnhancedTable
                 onEdit={(id) => {
                   setTitle('Edit LAD');
-                  setItem(getItemById(id)); 
+                  setItem(getItemById(id));
                   setOpen(true);
                 }}
                 onHeadways={(id) => {
-                  setItem(getItemById(id)); 
+                  setItem(getItemById(id));
                   setOpenHeadways(true);
                 }}
                 headers={tableHeaders}
@@ -232,21 +246,21 @@ export default function Lads() {
           </Paper>
         </Grid>
       </Grid>
-      <EditDialog 
-        open={open} 
-        title={title} 
-        item={item} 
-        setItem={setItem} 
-        onClose={processClose} 
+      <EditDialog
+        open={open}
+        title={title}
+        item={item}
+        setItem={setItem}
+        onClose={processClose}
       />
-      <HeadwaysDialog 
+      <HeadwaysDialog
         open={openHeadways}
-        title={headwaysTitle}
+        title='Edit headways'
         item={item}
         setItem={setItem}
         onClose={processHeadways}
       />
-      <Info 
+      <Info
         open={openInfo}
         setOpen={setOpenInfo}
         text={infoText}

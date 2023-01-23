@@ -3,6 +3,8 @@ import getConfigData from '../data/ConfigData';
 import getSitesData from '../data/SitesData';
 import getSegmentsData from '../data/SegmentsData';
 import getLadsData from '../data/LadsData';
+import getTimeTableData from '../data/TimeTableData'
+import getRuntimesData from '../data/RuntimesData'
 
 export const DataContext = createContext();
 
@@ -60,12 +62,24 @@ const DataContextProvider = ({ children }) => {
     }));
   };
 
+  const [timetables,  setTimetables] = useState(getTimeTableData());
+  const renewTimetables = (newTimetables) => { // FIXME:
+    setTimetables(newTimetables);
+  }
+
+  const [runtimes, setRuntimes] = useState(getRuntimesData());
+  const renewRuntimes = (newRuntimes) => {
+    setRuntimes(newRuntimes); // FIXME:
+  };
+
   return (
     <DataContext.Provider value={{ 
       config,
       sites, deleteSite, addSite, updateSite, 
       segments, addSegment, addSegments, updateSegment,
       lads, addLad, deleteLad, updateLad,
+      timetables, renewRuntimes,
+      runtimes, renewRuntimes,
     }}>
       {children}
     </DataContext.Provider>

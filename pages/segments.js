@@ -1,9 +1,9 @@
 import Segments from "../src/components/segments/Segments";
 
-const SitesPage = () => {
+const SegmentsPage = () => {
     return ( 
         <Segments />
      );
 }
  
-export default SitesPage;
+export default SegmentsPage;

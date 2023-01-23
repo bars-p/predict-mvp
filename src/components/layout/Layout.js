@@ -193,7 +193,7 @@ export default function Layout({ children }) {
               Trips Statistics Analysis and Prediction
             </Typography>
             <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
+              <Badge badgeContent={2} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>

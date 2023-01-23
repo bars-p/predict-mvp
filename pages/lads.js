@@ -1,9 +1,9 @@
 import Lads from "../src/components/lads/Lads";
 
-const SitesPage = () => {
+const LadsPage = () => {
     return ( 
         <Lads />
      );
 }
  
-export default SitesPage;
+export default LadsPage;

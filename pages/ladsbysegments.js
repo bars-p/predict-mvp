@@ -1,9 +1,9 @@
 import LadsBySegments from "../src/components/ladsbysegments/LadsBySegments";
 
-const SitesPage = () => {
+const LadsBySegmentsPage = () => {
     return ( 
         <LadsBySegments />
      );
 }
  
-export default SitesPage;
+export default LadsBySegmentsPage;
