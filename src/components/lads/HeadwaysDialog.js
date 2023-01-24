@@ -17,7 +17,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { border, Box } from '@mui/system';
+import Box from '@mui/material/Box';
 
 export default function HeadwaysDialog(props) {
   const { open, onClose, title, item, setItem } = props;

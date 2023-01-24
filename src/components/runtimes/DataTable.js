@@ -185,13 +185,16 @@ export function EnhancedTable(props) {
                 </IconButton>
               </Tooltip>
               <Tooltip title='Runtimes'>
-                <IconButton
-                  size='small'
-                  sx={{ ml: 1 }}
-                  onClick={() => onRuntimes(row.id)}
-                >
-                  <ScheduleIcon fontSize='inherit' />
-                </IconButton>
+                <span>
+                  <IconButton
+                    disabled={row.timetable.length == 0}
+                    size='small'
+                    sx={{ ml: 1 }}
+                    onClick={() => onRuntimes(row.id)}
+                  >
+                    <ScheduleIcon fontSize='inherit' />
+                  </IconButton>
+                </span>
               </Tooltip>
             </TableCell>
           </TableRow>

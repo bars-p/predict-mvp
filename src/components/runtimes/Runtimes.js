@@ -8,6 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import { DataContext } from '../../contexts/DataContext';
 import { EnhancedTableToolbar, EnhancedTable } from './DataTable';
 import TimetableDialog from './TimetableDialog';
+import RuntimesDialog from './RuntimesDialog';
 import Info from '../layout/Info';
 
 const mdTheme = createTheme();
@@ -36,6 +37,13 @@ export default function Runtimes() {
     departures: [],
   });
 
+  const getDefaultLadRuntimes = () => ({
+    id: undefined,
+    ladId: undefined,
+    departures: [],
+    runtimes: [],
+  });
+
   const getTimetableByLadId = (id) => {
     const [timetable] = [...timetables.filter((tt) => tt.ladId == id)];
     console.log('LAD id:', id); // FIXME:
@@ -48,15 +56,63 @@ export default function Runtimes() {
     };
   };
 
+  const getNextId = (items) => {
+    const ids = items.map((item) => item.id);
+    return Math.max(...ids) + 1;
+  };
+
   const getRuntimesByLadId = (id) => {
-    return [];
+    const [rt] = runtimes.filter((item) => item.ladId == id);
+    return rt || getDefaultLadRuntimes();
   };
 
   const processTimetable = (saveItem) => {
     if (saveItem) {
-      // TODO: Store TT
+      console.log('Timetable to Save:', timetable); // FIXME:
+      if (timetable.lad && timetable.departures.length) {
+        if (timetable.id) {
+          updateTimetable({
+            id: timetable.id,
+            ladId: timetable.ladId,
+            departures: [...timetable.departures],
+          });
+          showInfo('success', 'Item Updated');
+        } else {
+          addTimetable({
+            id: getNextId(timetables),
+            ladId: timetable.ladId,
+            departures: [...timetable.departures],
+          });
+          showInfo('success', 'Item Added');
+        }
+      } else {
+        console.error('Incomplete Object Passed', timetable);
+        showInfo('error', 'Incorrect data provided');
+      }
     }
     setOpenTimetable(false);
+  };
+
+  const processRuntimes = (saveItem) => {
+    if (saveItem) {
+      console.log('Runtimes to save', ladRuntimes); // FIXME:
+      if (ladRuntimes.departures.length && ladRuntimes.runtimes.length) {
+        if (ladRuntimes.id) {
+          updateRuntimes(ladRuntimes);
+          showInfo('success', 'Item Updated');
+        } else {
+          addRuntimes({
+            ...ladRuntimes,
+            id: getNextId(runtimes),
+          });
+          showInfo('success', 'Item Added');
+        }
+      } else {
+        console.error('Incomplete Object Passed', ladRuntimes);
+        showInfo('error', 'Incorrect data provided');
+      }
+    }
+    setOpenRuntimes(false);
   };
 
   const showInfo = (severity, text) => {
@@ -73,12 +129,17 @@ export default function Runtimes() {
     lads,
     timetables,
     renewTimetables,
+    addTimetable,
+    updateTimetable,
     runtimes,
     renewRuntimes,
+    addRuntimes,
+    updateRuntimes,
   } = useContext(DataContext);
 
   // const [item, setItem] = useState(getDefaultItem()); // FIXME:
   const [timetable, setTimetable] = useState(getDefaultTimetableItem());
+  const [ladRuntimes, setLadRuntimes] = useState(getDefaultLadRuntimes());
   const [openTimetable, setOpenTimetable] = useState(false);
   const [openRuntimes, setOpenRuntimes] = useState(false);
   const [openInfo, setOpenInfo] = useState(false);
@@ -208,7 +269,10 @@ export default function Runtimes() {
                   setOpenTimetable(true);
                 }}
                 onRuntimes={(id) => {
-                  setRuntimes(getRuntimesByLadId(id));
+                  setLadRuntimes(getRuntimesByLadId(id));
+                  setTimetable(getTimetableByLadId(id));
+                  console.log('LAD Timetable:', timetable); // FIXME:
+                  console.log('LAD Runtimes:', ladRuntimes); // FIXME:
                   setOpenRuntimes(true);
                 }}
                 headers={tableHeaders}
@@ -218,13 +282,27 @@ export default function Runtimes() {
           </Paper>
         </Grid>
       </Grid>
-      <TimetableDialog
-        open={openTimetable}
-        title='Headways title'
-        item={timetable}
-        setItem={setTimetable}
-        onClose={processTimetable}
-      />
+      {openTimetable && (
+        <TimetableDialog
+          open={openTimetable}
+          title='Headways title'
+          item={timetable}
+          setItem={setTimetable}
+          onClose={processTimetable}
+        />
+      )}
+      {openRuntimes && (
+        <RuntimesDialog
+          open={openRuntimes}
+          title='Runtimes title'
+          timetable={timetable}
+          config={config}
+          segmentsData={segments}
+          item={ladRuntimes}
+          setItem={setLadRuntimes}
+          onClose={processRuntimes}
+        />
+      )}
       <Info
         open={openInfo}
         setOpen={setOpenInfo}

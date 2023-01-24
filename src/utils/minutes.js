@@ -1,8 +1,8 @@
 export function timeToMinutes(timeString) {
-  console.log('Time Input', timeString); // FIXME:
+  // console.log('Time Input', timeString); // FIXME:
   const time = timeString.split(':');
   const minutes = +time[0] * 60 + +time[1];
-  console.log('Minutes:', minutes); // FIXME:
+  // console.log('Minutes:', minutes); // FIXME:
   return minutes;
 }
 
@@ -13,6 +13,6 @@ export function minutesToTime(minutes) {
     ('0' + hoursPart.toString()).slice(-2) +
     ':' +
     ('0' + minutesPart.toString()).slice(-2);
-  console.log('Time String:', timeString); // FIXME:
+  // console.log('Time String:', timeString); // FIXME:
   return timeString;
 }

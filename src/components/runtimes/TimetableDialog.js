@@ -7,9 +7,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import CachedIcon from '@mui/icons-material/Cached';
-import { Box } from '@mui/system';
+import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -42,7 +41,10 @@ export default function TimetableDialog(props) {
     console.log('Shift:', shift);
 
     const startMinutes = timeToMinutes(item.lad.serviceTime.start);
-    const endMinutes = timeToMinutes(item.lad.serviceTime.end);
+    let endMinutes = timeToMinutes(item.lad.serviceTime.end);
+    if (startMinutes > endMinutes) {
+      endMinutes = 24 * 60 - 1;
+    }
     const headways = item.lad.headways.map((hdw) => ({
       fromMinutes: timeToMinutes(hdw.fromTime),
       value: hdw.value,
@@ -127,7 +129,6 @@ export default function TimetableDialog(props) {
               />
             </Grid>
             <Grid item xs={2}></Grid>
-            <Divider />
             <Grid item xs={4}>
               <Typography sx={{ mt: 3 }}>
                 Time Table ({item.departures.length}):

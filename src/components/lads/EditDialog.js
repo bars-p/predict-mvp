@@ -19,11 +19,11 @@ import IconButton from '@mui/material/IconButton';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
-import { blue, grey } from '@mui/material/colors'
-import { border, Box } from '@mui/system';
+import { blue, grey } from '@mui/material/colors';
+// import { border, Box } from '@mui/system';
+import Box from '@mui/material/Box';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { DataContext } from '../../contexts/DataContext';
-
 
 export default function EditDialog(props) {
   const { open, onClose, title, item, setItem } = props;
@@ -37,13 +37,12 @@ export default function EditDialog(props) {
     .sort((a, b) => {
       if (a.name < b.name) {
         return -1;
-      }
-      else {
+      } else {
         return 1;
       }
     })
-    .map(item => ({...item, id: item.id.toString()}))
-    .filter(site => site.name.toLowerCase().includes(query));
+    .map((item) => ({ ...item, id: item.id.toString() }))
+    .filter((site) => site.name.toLowerCase().includes(query));
 
   const deleteSite = (index) => {
     let ids = [...item.siteIds];
@@ -53,12 +52,12 @@ export default function EditDialog(props) {
       siteIds: [...ids],
     });
   };
-  
+
   const handleClose = () => {
     setQuery('');
     onClose(false);
   };
-  
+
   const handleSave = () => {
     setQuery('');
     onClose(true);
@@ -66,16 +65,19 @@ export default function EditDialog(props) {
 
   const onDragStart = () => {
     setIsDragging(true);
-  }
+  };
 
   const onDragEnd = (result) => {
     setIsDragging(false);
     console.log('Drag Ended:', result);
-    const { source, destination, draggableId} = result;
+    const { source, destination, draggableId } = result;
     if (!destination) {
       return;
     }
-    if (source.droppableId == destination.droppableId && source.index == destination.index) {
+    if (
+      source.droppableId == destination.droppableId &&
+      source.index == destination.index
+    ) {
       return;
     }
     if (source.droppableId == destination.droppableId) {
@@ -86,7 +88,10 @@ export default function EditDialog(props) {
         siteIds: [...ids],
       });
     }
-    if (source.droppableId == 'allSites' && destination.droppableId == 'ladSites') {
+    if (
+      source.droppableId == 'allSites' &&
+      destination.droppableId == 'ladSites'
+    ) {
       let ids = [...item.siteIds];
       ids.splice(destination.index, 0, +draggableId);
       setItem({
@@ -98,146 +103,133 @@ export default function EditDialog(props) {
 
   return (
     <div>
-      <Dialog 
-        open={open} 
+      <Dialog
+        open={open}
         onClose={handleClose}
-        PaperProps={{sx: {minWidth: 700}}}
+        PaperProps={{ sx: { minWidth: 700 } }}
       >
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
-          <DragDropContext
-            onDragStart={onDragStart}
-            onDragEnd={onDragEnd}
-          >
+          <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
             <Grid container spacing={3}>
               <Grid item xs={6}>
-                <TextField 
-                  margin="none"
-                  id="code"
-                  label="LAD Name"
-                  type="text"
-                  variant="standard"
+                <TextField
+                  margin='none'
+                  id='code'
+                  label='LAD Name'
+                  type='text'
+                  variant='standard'
                   value={item.code}
                   onChange={(e) => setItem({ ...item, code: e.target.value })}
                   fullWidth
                 />
               </Grid>
+              <Grid item xs={6}></Grid>
               <Grid item xs={6}>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography
-                  sx={{ pt: 2, pb: 1 }}
+                <Typography sx={{ pt: 2, pb: 1 }}>LAD Sites:</Typography>
+                <Box
+                  sx={{
+                    maxHeight: 300,
+                    height: 300,
+                    overflow: 'auto',
+                    borderLeft: 3,
+                    borderColor: isDragging ? blue[500] : 'lightgrey',
+                    background: isDragging ? grey[50] : 'inherit',
+                  }}
                 >
-                  LAD Sites:
-                </Typography>
-                  <Box
-                    sx={{
-                      maxHeight: 300,
-                      height: 300,
-                      overflow: 'auto',
-                      borderLeft: 3,
-                      borderColor: isDragging ? blue[500] : 'lightgrey',
-                      background: isDragging ? grey[50] : 'inherit'
-                    }}
-                  >
-                    <Droppable
-                      droppableId='ladSites'
-                    >
-                      {provided => (
-                        <List 
-                          dense
-                          ref={provided.innerRef} 
-                          {...provided.droppableProps}
-                          sx={{
-                            minHeight: 300,
-                          }}
-                        >
-                          <Divider />
-                          {item.siteIds
-                            .map(id => sites.find(site => site.id == id))
-                            .map((item, idx) => ({ ...item, id: 'site-' + idx}))
-                            .map((site, index) => (
-                              <Draggable 
-                                draggableId={site?.id.toString() || '0'}
-                                index={index}
-                                key={site?.id.toString() || '0'}
-                              >
-                                {(provided, snapshot) =>(
-                                  <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
+                  <Droppable droppableId='ladSites'>
+                    {(provided) => (
+                      <List
+                        dense
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        sx={{
+                          minHeight: 300,
+                        }}
+                      >
+                        <Divider />
+                        {item.siteIds
+                          .map((id) => sites.find((site) => site.id == id))
+                          .map((item, idx) => ({ ...item, id: 'site-' + idx }))
+                          .map((site, index) => (
+                            <Draggable
+                              draggableId={site?.id.toString() || '0'}
+                              index={index}
+                              key={site?.id.toString() || '0'}
+                            >
+                              {(provided, snapshot) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                >
+                                  <ListItem
+                                    secondaryAction={
+                                      <IconButton
+                                        disabled={item.siteIds.length <= 2}
+                                        edge='end'
+                                        size='small'
+                                        onClick={() => deleteSite(index)}
+                                      >
+                                        <DeleteIcon fontSize='inherit' />
+                                      </IconButton>
+                                    }
+                                    sx={{
+                                      background: snapshot.isDragging
+                                        ? blue[100]
+                                        : 'inherit',
+                                      transition:
+                                        'background-color 0.2sec ease',
+                                    }}
                                   >
-                                    <ListItem
-                                      secondaryAction={
-                                        <IconButton 
-                                          disabled={item.siteIds.length <= 2}
-                                          edge="end" 
-                                          size='small'
-                                          onClick={() => deleteSite(index)}
-                                        >
-                                          <DeleteIcon fontSize='inherit' />
-                                        </IconButton>
-                                      }
-                                      sx={{
-                                        background: snapshot.isDragging ? blue[100] : 'inherit',
-                                        transition: 'background-color 0.2sec ease',
-                                      }}
-                                    >
-                                      <ListItemAvatar>
-                                        <Avatar 
-                                          variant='circular'
-                                          sx={{
-                                            width: '2rem', 
-                                            height: '2rem', 
-                                          }}
-                                        >
-                                          {site?.short || '?'}
-                                        </Avatar>
-                                      </ListItemAvatar>
-                                      <ListItemText 
-                                        primary={site?.name || 'Not found'}
-                                      />
-                                    </ListItem>
-                                    <Divider />
-                                  </div>
-                                )}
-                              </Draggable>
+                                    <ListItemAvatar>
+                                      <Avatar
+                                        variant='circular'
+                                        sx={{
+                                          width: '2rem',
+                                          height: '2rem',
+                                        }}
+                                      >
+                                        {site?.short || '?'}
+                                      </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                      primary={site?.name || 'Not found'}
+                                    />
+                                  </ListItem>
+                                  <Divider />
+                                </div>
+                              )}
+                            </Draggable>
                           ))}
-                          {provided.placeholder}
-                        </List>
-                      )}
-                    </Droppable>
+                        {provided.placeholder}
+                      </List>
+                    )}
+                  </Droppable>
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box
-                  sx={{ display: 'flex' }}
-                >
-                  <Typography
-                    sx={{ pt: 2, pb: 1 }}
-                  >
-                    Sites:
-                  </Typography>
+                <Box sx={{ display: 'flex' }}>
+                  <Typography sx={{ pt: 2, pb: 1 }}>Sites:</Typography>
                   <div className='spacer'></div>
-                  <TextField 
+                  <TextField
                     label='Search'
                     id='search'
                     size='small'
-                    variant="standard"
+                    variant='standard'
                     width={30}
                     value={query}
                     onChange={(e) => setQuery(e.target.value.toLowerCase())}
                     InputProps={{
                       endAdornment: (
-                        <InputAdornment position="end">
-                          {!query  && <SearchIcon />}
-                          {query  && 
-                            <ClearIcon 
+                        <InputAdornment position='end'>
+                          {!query && <SearchIcon />}
+                          {query && (
+                            <ClearIcon
                               sx={{ cursor: 'pointer' }}
                               onClick={() => setQuery('')}
                             />
-                          }
+                          )}
                         </InputAdornment>
                       ),
                     }}
@@ -249,12 +241,12 @@ export default function EditDialog(props) {
                     height: 300,
                     overflow: 'auto',
                     borderLeft: 2,
-                    borderColor: 'lightgrey'
+                    borderColor: 'lightgrey',
                   }}
                 >
                   <Droppable droppableId='allSites' isDropDisabled>
                     {(provided) => (
-                      <List 
+                      <List
                         dense
                         ref={provided.innerRef}
                         {...provided.droppableProps}
@@ -274,24 +266,24 @@ export default function EditDialog(props) {
                               >
                                 <ListItem
                                   sx={{
-                                    background: snapshot.isDragging ? blue[100] : 'inherit',
+                                    background: snapshot.isDragging
+                                      ? blue[100]
+                                      : 'inherit',
                                     transition: 'background-color 0.2sec ease',
                                   }}
                                 >
                                   <ListItemAvatar>
-                                    <Avatar 
+                                    <Avatar
                                       variant='circular'
                                       sx={{
-                                        width: '2rem', 
-                                        height: '2rem', 
+                                        width: '2rem',
+                                        height: '2rem',
                                       }}
                                     >
                                       {site.short}
                                     </Avatar>
                                   </ListItemAvatar>
-                                  <ListItemText 
-                                    primary={site.name}
-                                  />
+                                  <ListItemText primary={site.name} />
                                 </ListItem>
                                 <Divider />
                               </div>
