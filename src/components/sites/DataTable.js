@@ -15,6 +15,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 import Title from '../layout/Title';
+import { Avatar } from '@mui/material';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -132,7 +133,9 @@ export function EnhancedTable(props) {
               {index + 1}
             </TableCell>
             <TableCell sx={{ py: 1 }}>{row.name}</TableCell>
-            <TableCell sx={{ py: 1 }}>{row.code}</TableCell>
+            <TableCell sx={{ py: 1 }}>
+              <Avatar sx={{ width: 32, height: 32 }}>{row.code}</Avatar>
+            </TableCell>
             <TableCell sx={{ py: 1 }}>{row.ladsNumber}</TableCell>
             <TableCell sx={{ py: 1 }}>{row.ladsName}</TableCell>
             <TableCell align='right' sx={{ py: 1, width: 120 }}>
