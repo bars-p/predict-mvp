@@ -6,8 +6,6 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Chart from '../old/Chart';
-// import Deposits from './Deposits';
-// import Orders from '../old/Orders';
 import SimpleTable from '../layout/SimpleTable';
 import { DataContext } from '../../contexts/DataContext';
 import { useRouter } from 'next/router';
@@ -22,11 +20,11 @@ export default function Dashboard() {
   const { sites, segments, lads } = useContext(DataContext);
 
   const getSiteCodeById = (id) => {
-    return sites.find(site => site.id == id)?.short || '?';
+    return sites.find((site) => site.id == id)?.short || '?';
   };
-  
+
   const getSiteNameById = (id) => {
-    return sites.find(site => site.id == id)?.name || 'Not found';
+    return sites.find((site) => site.id == id)?.name || 'Not found';
   };
 
   const siteHeaders = [
@@ -45,7 +43,7 @@ export default function Dashboard() {
       sort: true,
     },
   ];
-  const siteItems = sites.map(site => ({
+  const siteItems = sites.map((site) => ({
     id: site.id,
     name: site.name,
     code: site.short,
@@ -74,9 +72,11 @@ export default function Dashboard() {
       sort: true,
     },
   ];
-  const segmentItems = segments.map(segment => ({
+  const segmentItems = segments.map((segment) => ({
     id: segment.id,
-    segment: `${getSiteCodeById(segment.startSiteId)} –> ${getSiteCodeById(segment.endSiteId)}`,
+    segment: `${getSiteCodeById(segment.startSiteId)} ➙ ${getSiteCodeById(
+      segment.endSiteId
+    )}`,
     // sites: `${getSiteNameById(segment.startSiteId)} --> ${getSiteNameById(segment.endSiteId)}`,
     length: segment.length,
   }));
@@ -104,10 +104,12 @@ export default function Dashboard() {
     //   sort: true,
     // },
   ];
-  const ladItems = lads.map(lad => ({
+  const ladItems = lads.map((lad) => ({
     id: lad.id,
     code: lad.code,
-    name: `${getSiteNameById(lad.siteIds[0])} - ${getSiteNameById(lad.siteIds[lad.siteIds.length - 1])}`,
+    name: `${getSiteNameById(lad.siteIds[0])} - ${getSiteNameById(
+      lad.siteIds[lad.siteIds.length - 1]
+    )}`,
     // sites: lad.siteIds.length,
   }));
 
@@ -126,7 +128,7 @@ export default function Dashboard() {
               cursor: 'pointer',
             }}
           >
-            <SimpleTable 
+            <SimpleTable
               title='Sites'
               headers={siteHeaders}
               items={siteItems}
@@ -145,7 +147,7 @@ export default function Dashboard() {
               cursor: 'pointer',
             }}
           >
-            <SimpleTable 
+            <SimpleTable
               title='Segments'
               headers={segmentHeaders}
               items={segmentItems}
@@ -164,11 +166,7 @@ export default function Dashboard() {
               cursor: 'pointer',
             }}
           >
-            <SimpleTable 
-              title='LADs'
-              headers={ladHeaders}
-              items={ladItems}
-            />
+            <SimpleTable title='LADs' headers={ladHeaders} items={ladItems} />
           </Paper>
         </Grid>
         {/* Chart */}

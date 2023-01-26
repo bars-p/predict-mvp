@@ -97,11 +97,13 @@ export function EnhancedTableToolbar(props) {
     >
       <Title>{props.children}</Title>
       <div className='spacer'></div>
-      <Tooltip title='Regenerate Runtimes'>
-        <IconButton size='large' onClick={onRegenerate}>
-          <HistoryIcon fontSize='inherit' />
-        </IconButton>
-      </Tooltip>
+      {false && (
+        <Tooltip title='Regenerate Runtimes'>
+          <IconButton size='large' onClick={onRegenerate}>
+            <HistoryIcon fontSize='inherit' />
+          </IconButton>
+        </Tooltip>
+      )}
     </Toolbar>
   );
 }

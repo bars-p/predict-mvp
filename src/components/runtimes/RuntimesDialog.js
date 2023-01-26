@@ -20,7 +20,7 @@ import { timeToMinutes, minutesToTime } from '../../utils/minutes';
 import { grey } from '@mui/material/colors';
 
 export default function RuntimesDialog(props) {
-  const { open, onClose, item, setItem, timetable, segmentsData, config } =
+  const { open, onClose, item, setItem, timetable, segmentsData, settings } =
     props;
 
   // const [local, setLocal] = useState({ fromTime: '00:00', value: 0 }); // FIXME:
@@ -74,22 +74,25 @@ export default function RuntimesDialog(props) {
 
   const generateDepartureTime = (scheduled) => {
     const scheduledMinutes = timeToMinutes(scheduled);
-    const variation = Math.round(Math.random() * 5) - 2;
+    const before = settings.departureShift.before;
+    const after = settings.departureShift.after;
+    // 'before' should always be negative
+    const variation = Math.round(Math.random() * (after - before)) + before;
     const resultMinutes = scheduledMinutes + variation;
     return minutesToTime(resultMinutes);
   };
 
   const getCoefficient = (departureTime) => {
-    const periodsNum = config.dayPeriodCoefficients.length;
+    const periodsNum = settings.dayPeriodCoefficients.length;
     if (periodsNum == 0) {
       return 0;
     }
-    let value = config.dayPeriodCoefficients[periodsNum - 1].value;
-    for (let i = 0; i < config.dayPeriodCoefficients.length; i++) {
-      if (departureTime < config.dayPeriodCoefficients[i].fromTime) {
+    let value = settings.dayPeriodCoefficients[periodsNum - 1].value;
+    for (let i = 0; i < settings.dayPeriodCoefficients.length; i++) {
+      if (departureTime < settings.dayPeriodCoefficients[i].fromTime) {
         break;
       } else {
-        value = config.dayPeriodCoefficients[i].value;
+        value = settings.dayPeriodCoefficients[i].value;
       }
     }
     console.log('Coef found for time:', departureTime, value); // FIXME:
@@ -100,8 +103,13 @@ export default function RuntimesDialog(props) {
     const segment = segmentsData.find((seg) => seg.id == segmentId);
     console.log('Segment Found', segment);
     // TODO: Add Random Values FIXME:
+    const variationGap =
+      segment.length * (settings.tripTimeVariationPercent / 100);
+    const variation = Math.random() * variationGap - variationGap / 2;
     const runtime = segment
-      ? Math.round((segment.length / 1000 / (coef * segment.speed)) * 60)
+      ? Math.round(
+          ((segment.length + variation) / 1000 / (coef * segment.speed)) * 60
+        )
       : 0;
     console.warn('Generated Runtime for Segment', segmentId, runtime);
 

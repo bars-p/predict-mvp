@@ -123,7 +123,7 @@ export default function Runtimes() {
 
   const {
     // FIXME:
-    config,
+    settings,
     sites,
     segments,
     lads,
@@ -296,7 +296,7 @@ export default function Runtimes() {
           open={openRuntimes}
           title='Runtimes title'
           timetable={timetable}
-          config={config}
+          settings={settings}
           segmentsData={segments}
           item={ladRuntimes}
           setItem={setLadRuntimes}

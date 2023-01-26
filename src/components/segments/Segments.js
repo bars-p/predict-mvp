@@ -18,26 +18,26 @@ export default function Segments() {
     startSiteId: undefined,
     endSiteId: undefined,
     length: 0,
-    speed: config.defaultSpeed,
+    speed: settings.defaultSpeed,
   });
   const getItemById = (id) => {
-    let item = segments.find(segment => segment.id == id);
+    let item = segments.find((segment) => segment.id == id);
     if (item == undefined) {
       item = getDefaultItem();
     }
     return item;
   };
   const getDefaultTableItem = () => ({
-      id: undefined,
-      direction: '? –> ?',
-      sites: 'Data not found',
-      length: 0,
-      speed: 0,
-      action: null,
+    id: undefined,
+    direction: '? ➙ ?',
+    sites: 'Data not found',
+    length: 0,
+    speed: 0,
+    action: null,
   });
- 
+
   const getTableItem = (id) => {
-    let item = tableData.find(item => item.id == id); 
+    let item = tableData.find((item) => item.id == id);
     if (item == undefined) {
       item = getDefaultTableItem();
     }
@@ -45,11 +45,11 @@ export default function Segments() {
   };
 
   const getSiteCodeById = (id) => {
-    return sites.find(site => site.id == id)?.short || '?';
+    return sites.find((site) => site.id == id)?.short || '?';
   };
-  
+
   const getSiteNameById = (id) => {
-    return sites.find(site => site.id == id)?.name || 'Not found';
+    return sites.find((site) => site.id == id)?.name || 'Not found';
   };
 
   const processClose = (saveItem) => {
@@ -59,7 +59,7 @@ export default function Segments() {
           ...item,
           speed: +tableItem.speed,
           length: +tableItem.length,
-        }); 
+        });
         showInfo('success', 'Item Updated');
       } else {
         console.error('Errored Object Passed', tableItem);
@@ -75,14 +75,14 @@ export default function Segments() {
     setOpenInfo(true);
   };
 
-  const { config, sites, segments, updateSegment } = useContext(DataContext);
+  const { settings, sites, segments, updateSegment } = useContext(DataContext);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('Dialog Title');
   const [item, setItem] = useState(getDefaultItem());
   const [tableItem, setTableItem] = useState(getDefaultTableItem());
   const [openInfo, setOpenInfo] = useState(false);
   const [infoText, setInfoText] = useState('');
-  const [infoSeverity, setInfoSeverity] = useState('info')
+  const [infoSeverity, setInfoSeverity] = useState('info');
 
   const tableHeaders = [
     {
@@ -129,10 +129,14 @@ export default function Segments() {
     },
   ];
 
-  const tableData = segments.map(segment => ({
+  const tableData = segments.map((segment) => ({
     id: segment.id,
-    direction: `${getSiteCodeById(segment.startSiteId)} –> ${getSiteCodeById(segment.endSiteId)}`,
-    sites: `${getSiteNameById(segment.startSiteId)} – ${getSiteNameById(segment.endSiteId)}`,
+    direction: `${getSiteCodeById(segment.startSiteId)} ➙ ${getSiteCodeById(
+      segment.endSiteId
+    )}`,
+    sites: `${getSiteNameById(segment.startSiteId)} – ${getSiteNameById(
+      segment.endSiteId
+    )}`,
     length: segment.length,
     speed: segment.speed,
     action: null,
@@ -142,16 +146,15 @@ export default function Segments() {
     <ThemeProvider theme={mdTheme}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Paper 
-            sx={{ 
-              p: 2, 
-              display: 'flex', 
-              flexDirection: 'column', 
-              maxHeight: '83vh' 
+          <Paper
+            sx={{
+              p: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              maxHeight: '83vh',
             }}
           >
-            <EnhancedTableToolbar 
-            >
+            <EnhancedTableToolbar>
               Segments ({segments.length})
             </EnhancedTableToolbar>
             <TableContainer>
@@ -159,7 +162,7 @@ export default function Segments() {
                 onEdit={(id) => {
                   setTitle('Edit Segment Data');
                   setItem(getItemById(id));
-                  setTableItem(getTableItem(id)); 
+                  setTableItem(getTableItem(id));
                   setOpen(true);
                 }}
                 headers={tableHeaders}
@@ -169,14 +172,14 @@ export default function Segments() {
           </Paper>
         </Grid>
       </Grid>
-      <EditDialog 
-        open={open} 
-        title={title} 
-        item={tableItem} 
-        setItem={setTableItem} 
-        onClose={processClose} 
+      <EditDialog
+        open={open}
+        title={title}
+        item={tableItem}
+        setItem={setTableItem}
+        onClose={processClose}
       />
-      <Info 
+      <Info
         open={openInfo}
         setOpen={setOpenInfo}
         text={infoText}

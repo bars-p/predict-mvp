@@ -1,5 +1,5 @@
 import React, { useState, createContext } from 'react';
-import getConfigData from '../data/ConfigData';
+import getSettingsData from '../data/SettingsData';
 import getSitesData from '../data/SitesData';
 import getSegmentsData from '../data/SegmentsData';
 import getLadsData from '../data/LadsData';
@@ -9,7 +9,7 @@ import getRuntimesData from '../data/RuntimesData';
 export const DataContext = createContext();
 
 const DataContextProvider = ({ children }) => {
-  const [config, setConfig] = useState(getConfigData());
+  const [settings, setSettings] = useState(getSettingsData());
 
   const [sites, setSites] = useState(getSitesData());
   const deleteSite = (id) => {
@@ -108,7 +108,8 @@ const DataContextProvider = ({ children }) => {
   return (
     <DataContext.Provider
       value={{
-        config,
+        settings,
+        setSettings,
         sites,
         deleteSite,
         addSite,

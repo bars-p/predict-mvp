@@ -31,9 +31,10 @@ import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import DepartureBoardIcon from '@mui/icons-material/DepartureBoard';
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import AutoModeIcon from '@mui/icons-material/AutoMode';
-import ConfigDialog from './ConfigDialog';
-import { DataContext } from '../../contexts/DataContext';
 import { blue } from '@mui/material/colors';
+import SettingsDialog from './SettingsDialog';
+import InfoBlock from './Info';
+import { DataContext } from '../../contexts/DataContext';
 
 const drawerWidth = 240;
 
@@ -55,31 +56,31 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    '& .MuiDrawer-paper': {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  '& .MuiDrawer-paper': {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    boxSizing: 'border-box',
+    ...(!open && {
+      overflowX: 'hidden',
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
+        duration: theme.transitions.duration.leavingScreen,
       }),
-      boxSizing: 'border-box',
-      ...(!open && {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-          width: theme.spacing(9),
-        },
-      }),
-    },
-  }),
-);
+      width: theme.spacing(7),
+      [theme.breakpoints.up('sm')]: {
+        width: theme.spacing(9),
+      },
+    }),
+  },
+}));
 
 const mdTheme = createTheme();
 
@@ -87,32 +88,32 @@ const configurationItems = [
   {
     text: 'Overview',
     icon: <DashboardIcon />,
-    path: '/'
+    path: '/',
   },
   {
     text: 'Scheme',
     icon: <MapIcon />,
-    path: '/scheme'
+    path: '/scheme',
   },
   {
     text: 'Sites',
     icon: <PinDropIcon />,
-    path: '/sites'
+    path: '/sites',
   },
   {
     text: 'LADs',
     icon: <HubIcon />,
-    path: '/lads'
+    path: '/lads',
   },
   {
     text: 'Segments',
     icon: <PolylineIcon />,
-    path: '/segments'
+    path: '/segments',
   },
   {
     text: 'LADs by Segments',
     icon: <CallSplitIcon />,
-    path: '/ladsbysegments'
+    path: '/ladsbysegments',
   },
 ];
 
@@ -120,12 +121,12 @@ const historicalItems = [
   {
     text: 'Runtimes',
     icon: <AccessTimeIcon />,
-    path: '/runtimes'
+    path: '/runtimes',
   },
   {
     text: 'Analytics',
     icon: <QueryStatsIcon />,
-    path: '/analytics'
+    path: '/analytics',
   },
 ];
 
@@ -133,48 +134,75 @@ const predictionItems = [
   {
     text: 'Probabilities',
     icon: <DepartureBoardIcon />,
-    path: '/probabilities'
+    path: '/probabilities',
   },
   {
     text: 'Monitor',
     icon: <DisplaySettingsIcon />,
-    path: '/monitor'
+    path: '/monitor',
   },
   {
     text: 'Simulation',
     icon: <AutoModeIcon />,
-    path: '/simulation'
+    path: '/simulation',
   },
 ];
 
 export default function Layout({ children }) {
-  const { config } = useContext(DataContext);
+  const { settings, setSettings } = useContext(DataContext);
 
+  const [settingsItem, setSettingsItem] = useState(settings);
   const [open, setOpen] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
-  const [item, setItem] = useState(config);
+  const [openInfo, setOpenInfo] = useState(false);
+  const [infoText, setInfoText] = useState('');
+  const [infoSeverity, setInfoSeverity] = useState('info');
+
+  const showInfo = (severity, text) => {
+    setInfoText(text);
+    setInfoSeverity(severity);
+    setOpenInfo(true);
+  };
+
+  const processSettings = (saveItem) => {
+    if (saveItem) {
+      if (
+        settingsItem.defaultSpeed &&
+        settingsItem.dayPeriodCoefficients.length &&
+        settingsItem.departureShift.before &&
+        settingsItem.departureShift.after &&
+        settingsItem.tripTimeVariationPercent
+      ) {
+        setSettings(settingsItem);
+        showInfo('success', 'Settings Updated');
+      } else {
+        console.error('Incomplete or Incorrect Settings', settingsItem);
+        showInfo('error', 'Incorrect data provided');
+      }
+    }
+    setOpenDialog(false);
+  };
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
   const router = useRouter();
-  // console.log(router.pathname); // FIXME:
 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <AppBar position="absolute" open={open}>
+        <AppBar position='absolute' open={open}>
           <Toolbar
             sx={{
               pr: '24px', // keep right padding when drawer closed
             }}
           >
             <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
+              edge='start'
+              color='inherit'
+              aria-label='open drawer'
               onClick={toggleDrawer}
               sx={{
                 marginRight: '36px',
@@ -184,25 +212,33 @@ export default function Layout({ children }) {
               <MenuIcon />
             </IconButton>
             <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
+              component='h1'
+              variant='h6'
+              color='inherit'
               noWrap
               sx={{ flexGrow: 1 }}
             >
               Trips Statistics Analysis and Prediction
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={2} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton color="inherit" onClick={() => setOpenDialog(true)}>
+            {false && (
+              <IconButton color='inherit'>
+                <Badge badgeContent={2} color='secondary'>
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+            )}
+            <IconButton
+              color='inherit'
+              onClick={() => {
+                setSettingsItem(settings);
+                setOpenDialog(true);
+              }}
+            >
               <SettingsIcon />
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
+        <Drawer variant='permanent' open={open}>
           <Toolbar
             sx={{
               display: 'flex',
@@ -216,21 +252,22 @@ export default function Layout({ children }) {
             </IconButton>
           </Toolbar>
           <Divider />
-          <List component="nav">
-            <ListSubheader component="div" inset>
+          <List component='nav'>
+            <ListSubheader component='div' inset>
               Configuration
             </ListSubheader>
-            {configurationItems.map(item => (
-              <ListItemButton 
-                key={item.text} 
+            {configurationItems.map((item) => (
+              <ListItemButton
+                key={item.text}
                 onClick={() => router.push(item.path)}
                 sx={{
-                  backgroundColor: router.pathname == item.path ? blue[50] : null,
+                  backgroundColor:
+                    router.pathname == item.path ? blue[50] : null,
                 }}
               >
-                <ListItemIcon 
+                <ListItemIcon
                   sx={{
-                    pl: '7px'
+                    pl: '7px',
                   }}
                 >
                   {item.icon}
@@ -239,75 +276,83 @@ export default function Layout({ children }) {
               </ListItemButton>
             ))}
             <Divider sx={{ my: 1 }} />
-            <ListSubheader component="div" inset>
+            <ListSubheader component='div' inset>
               Historical
             </ListSubheader>
-            {historicalItems.map(item => (
-              <ListItemButton 
-                key={item.text} 
+            {historicalItems.map((item) => (
+              <ListItemButton
+                key={item.text}
                 onClick={() => router.push(item.path)}
                 sx={{
-                  backgroundColor: router.pathname == item.path ? blue[50] : null,
+                  backgroundColor:
+                    router.pathname == item.path ? blue[50] : null,
                 }}
               >
-                <ListItemIcon 
+                <ListItemIcon
                   sx={{
-                    pl: '7px'
+                    pl: '7px',
                   }}
                 >
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText primary={item.text} />
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} />
               </ListItemButton>
             ))}
             <Divider sx={{ my: 1 }} />
-            <ListSubheader component="div" inset>
+            <ListSubheader component='div' inset>
               Prediction
             </ListSubheader>
-            {predictionItems.map(item => (
-              <ListItemButton 
-                key={item.text} 
+            {predictionItems.map((item) => (
+              <ListItemButton
+                key={item.text}
                 onClick={() => router.push(item.path)}
                 sx={{
-                  backgroundColor: router.pathname == item.path ? blue[50] : null,
+                  backgroundColor:
+                    router.pathname == item.path ? blue[50] : null,
                 }}
               >
-                <ListItemIcon 
+                <ListItemIcon
                   sx={{
-                    pl: '7px'
+                    pl: '7px',
                   }}
                 >
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText primary={item.text} />
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} />
               </ListItemButton>
             ))}
           </List>
         </Drawer>
         <Box
-          component="main"
+          component='main'
           sx={{
             backgroundColor: (theme) =>
-            theme.palette.mode === 'light'
-            ? theme.palette.grey[100]
-            : theme.palette.grey[900],
+              theme.palette.mode === 'light'
+                ? theme.palette.grey[100]
+                : theme.palette.grey[900],
             flexGrow: 1,
             height: '100vh',
             overflow: 'auto',
           }}
         >
           <Toolbar />
-          <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-            { children }
+          <Container maxWidth='xl' sx={{ mt: 4, mb: 4 }}>
+            {children}
           </Container>
         </Box>
       </Box>
-      <ConfigDialog 
-        open={openDialog} 
-        title='Configuration Settings'
-        item={item} 
-        setItem={setItem} 
-        onClose={() => setOpenDialog(false)} 
+      <SettingsDialog
+        open={openDialog}
+        title='General Settings'
+        item={settingsItem}
+        setItem={setSettingsItem}
+        onClose={processSettings}
+      />
+      <InfoBlock
+        open={openInfo}
+        setOpen={setOpenInfo}
+        text={infoText}
+        severity={infoSeverity}
       />
     </ThemeProvider>
   );

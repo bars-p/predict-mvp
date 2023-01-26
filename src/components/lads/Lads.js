@@ -54,7 +54,7 @@ export default function Lads() {
           startSiteId: startId,
           endSiteId: endId,
           length: 0,
-          speed: config.defaultSpeed,
+          speed: settings.defaultSpeed,
         };
         newSegmentsCreated.push({ ...newSegment });
         newSegmentCount++;
@@ -105,7 +105,7 @@ export default function Lads() {
   };
 
   const {
-    config,
+    settings,
     sites,
     segments,
     addSegment,
