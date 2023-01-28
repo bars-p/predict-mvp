@@ -3,7 +3,7 @@ export default function getSettingsData() {
     defaultSpeed: 11,
     dayPeriodCoefficients: [
       {
-        fromTime: '06:00',
+        fromTime: '05:00',
         value: 0.9,
       },
       {
@@ -11,8 +11,8 @@ export default function getSettingsData() {
         value: 0.8,
       },
       {
-        value: 0.9,
         fromTime: '10:00',
+        value: 0.9,
       },
       {
         fromTime: '16:00',

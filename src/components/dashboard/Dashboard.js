@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Chart from '../old/Chart';
+import Chart from './Chart';
 import SimpleTable from '../layout/SimpleTable';
 import { DataContext } from '../../contexts/DataContext';
 import { useRouter } from 'next/router';
@@ -17,7 +17,7 @@ export default function Dashboard() {
   const sitesRoute = '/sites';
   const segmentsRoute = '/segments';
   const ladsRoute = '/lads';
-  const { sites, segments, lads } = useContext(DataContext);
+  const { settings, sites, segments, lads } = useContext(DataContext);
 
   const getSiteCodeById = (id) => {
     return sites.find((site) => site.id == id)?.short || '?';
@@ -176,10 +176,10 @@ export default function Dashboard() {
               p: 2,
               display: 'flex',
               flexDirection: 'column',
-              height: '35vh',
+              height: '45vh',
             }}
           >
-            <Chart />
+            <Chart coefficients={settings.dayPeriodCoefficients} />
           </Paper>
         </Grid>
       </Grid>
