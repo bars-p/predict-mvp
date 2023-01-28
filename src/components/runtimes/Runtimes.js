@@ -124,6 +124,7 @@ export default function Runtimes() {
   const {
     // FIXME:
     settings,
+    daySpeedCoefs,
     sites,
     segments,
     lads,
@@ -297,6 +298,7 @@ export default function Runtimes() {
           title='Runtimes title'
           timetable={timetable}
           settings={settings}
+          speedCoefs={daySpeedCoefs}
           segmentsData={segments}
           item={ladRuntimes}
           setItem={setLadRuntimes}

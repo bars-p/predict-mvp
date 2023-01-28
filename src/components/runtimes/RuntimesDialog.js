@@ -20,11 +20,17 @@ import { timeToMinutes, minutesToTime } from '../../utils/minutes';
 import { grey } from '@mui/material/colors';
 
 export default function RuntimesDialog(props) {
-  const { open, onClose, item, setItem, timetable, segmentsData, settings } =
-    props;
+  const {
+    open,
+    onClose,
+    item,
+    setItem,
+    timetable,
+    segmentsData,
+    settings,
+    speedCoefs,
+  } = props;
 
-  // const [local, setLocal] = useState({ fromTime: '00:00', value: 0 }); // FIXME:
-  // const [shift, setShift] = useState(0);
   const [depth, setDepth] = useState(item.runtimes.length || 1);
 
   const handleClose = () => {
@@ -37,41 +43,6 @@ export default function RuntimesDialog(props) {
     setDepth(1);
   };
 
-  // const generateTimetable = () => {
-  //   // FIXME:
-  //   console.log('Generate TT Started');
-  //   console.log('LAD:', item);
-  //   console.log('Shift:', shift);
-
-  //   const startMinutes = timeToMinutes(item.lad.serviceTime.start);
-  //   let endMinutes = timeToMinutes(item.lad.serviceTime.end);
-  //   if (startMinutes > endMinutes) {
-  //     endMinutes = 24 * 60 - 1;
-  //   }
-  //   const headways = item.lad.headways.map((hdw) => ({
-  //     fromMinutes: timeToMinutes(hdw.fromTime),
-  //     value: hdw.value,
-  //   }));
-  //   const timetable = [];
-
-  //   let tripMinutes = startMinutes + +shift;
-  //   console.log('Start Minutes:', tripMinutes);
-  //   while (tripMinutes < endMinutes) {
-  //     timetable.push(minutesToTime(tripMinutes));
-  //     let headway = headways[headways.length - 1].value;
-  //     for (let i = 0; i < headways.length; i++) {
-  //       if (headways[i].fromMinutes <= tripMinutes) {
-  //         headway = headways[i].value;
-  //       } else {
-  //         break;
-  //       }
-  //     }
-  //     tripMinutes += headway;
-  //   }
-  //   console.log('Timetable Generated:', timetable);
-  //   setItem({ ...item, departures: [...timetable] });
-  // };
-
   const generateDepartureTime = (scheduled) => {
     const scheduledMinutes = timeToMinutes(scheduled);
     const before = settings.departureShift.before;
@@ -83,18 +54,22 @@ export default function RuntimesDialog(props) {
   };
 
   const getCoefficient = (departureTime) => {
-    const periodsNum = settings.dayPeriodCoefficients.length;
-    if (periodsNum == 0) {
-      return 0;
-    }
-    let value = settings.dayPeriodCoefficients[periodsNum - 1].value;
-    for (let i = 0; i < settings.dayPeriodCoefficients.length; i++) {
-      if (departureTime < settings.dayPeriodCoefficients[i].fromTime) {
-        break;
-      } else {
-        value = settings.dayPeriodCoefficients[i].value;
-      }
-    }
+    // const periodsNum = settings.dayPeriodCoefficients.length;
+    // if (periodsNum == 0) {
+    //   return 0;
+    // }
+    // let value = settings.dayPeriodCoefficients[periodsNum - 1].value;
+    // for (let i = 0; i < settings.dayPeriodCoefficients.length; i++) {
+    //   if (departureTime < settings.dayPeriodCoefficients[i].fromTime) {
+    //     break;
+    //   } else {
+    //     value = settings.dayPeriodCoefficients[i].value;
+    //   }
+    // }
+
+    const departureMinutes = timeToMinutes(departureTime);
+    const value = speedCoefs[departureMinutes].y;
+
     console.log('Coef found for time:', departureTime, value); // FIXME:
     return value;
   };

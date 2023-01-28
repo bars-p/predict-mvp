@@ -9,11 +9,12 @@ import Toolbar from '@mui/material/Toolbar';
 import MUITooltip from '@mui/material/Tooltip';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import { Box } from '@mui/material';
 import { indigo } from '@mui/material/colors';
 
-import { DataContext } from '../../contexts/DataContext';
 import Title from '../layout/Title';
-import { timeToMinutes } from '../../utils/minutes';
+import { DataContext } from '../../contexts/DataContext';
+import { timeToMinutes, minutesToTime } from '../../utils/minutes';
 
 import {
   LineChart,
@@ -57,6 +58,27 @@ const onAdd = () => {
 
 // FIXME: Delete above later
 
+function MyTooltip(props) {
+  const { active, payload } = props;
+  if (active) {
+    console.log('Tooltip Data (active, payload):', active, payload);
+    return (
+      <Box
+        margin={1}
+        padding={1}
+        sx={{ background: 'white', border: '1px solid lightgrey' }}
+      >
+        <Typography variant='body2'>
+          {payload[0].name}: {minutesToTime(payload[0].value)}
+        </Typography>
+        <Typography variant='body2'>
+          {payload[1].name}: {minutesToTime(payload[1].value)}
+        </Typography>
+      </Box>
+    );
+  }
+}
+
 export default function Analytics() {
   const theme = useTheme();
 
@@ -86,19 +108,14 @@ export default function Analytics() {
     trips: rt.departures.length,
   }));
 
-  // FIXME: Delete Later
   const [selected, setSelected] = useState({ name: 'none', id: undefined });
   const [tooltipData, setTooltipData] = useState({
     trips: undefined,
     depth: undefined,
   });
-  const [ladStatistics, setLadStatistics] = useState([
-    startPoint,
-    // { x: 720, y: 100 },
-    endPoint,
-  ]);
+  const [ladStatistics, setLadStatistics] = useState([startPoint, endPoint]);
 
-  const [ladStatisticsDepth, setLadStatisticsDepth] = useState([
+  const [ladStatisticsWithDepth, setLadStatisticsWithDepth] = useState([
     [startPoint, endPoint],
   ]);
 
@@ -119,7 +136,7 @@ export default function Analytics() {
     setLadStatistics(data);
   };
 
-  const getLadDataDepth = (ladId) => {
+  const getLadDataWithDepth = (ladId) => {
     const depthRuntimes = runtimes
       .find((rt) => rt.ladId == ladId)
       .runtimes.map((item) => {
@@ -132,8 +149,47 @@ export default function Analytics() {
         return tripsData;
       });
     console.log('LAD data with Depth:', depthRuntimes);
-    setLadStatisticsDepth(depthRuntimes);
+    setLadStatisticsWithDepth(depthRuntimes);
   };
+
+  const getGenerationFill = (index) => {
+    switch (index) {
+      case 0:
+      case 1:
+      case 2:
+        return indigo[900];
+      case 3:
+      case 4:
+      case 5:
+        return indigo[800];
+      case 6:
+      case 7:
+      case 8:
+        return indigo[700];
+      case 9:
+      case 10:
+      case 11:
+        return indigo[600];
+      case 12:
+      case 13:
+      case 14:
+        return indigo[500];
+      case 15:
+      case 16:
+      case 17:
+        return indigo[400];
+      default:
+        return indigo[300];
+    }
+  };
+
+  function getColorIndex(total, index) {
+    if (total - index > 24) {
+      return 1;
+    } else {
+      return Math.ceil((24 - total + index + 1) / 3) + 1;
+    }
+  }
 
   return (
     <Grid container spacing={3}>
@@ -177,16 +233,16 @@ export default function Analytics() {
                 renderInput={(params) => <TextField {...params} label='LAD' />}
                 sx={{ width: 150 }}
                 onChange={(e, newValue) => {
-                  console.log(newValue);
+                  console.log(newValue); // FIXME:
                   setSelected({ name: newValue.label, id: newValue.ladId });
                   setTooltipData({
                     trips: newValue.trips,
                     depth: newValue.depth,
                   });
                   getLadData(newValue.ladId);
-                  getLadDataDepth(newValue.ladId);
-                  console.log('LADs:', lads);
-                  console.log('Runtimes:', runtimes);
+                  getLadDataWithDepth(newValue.ladId);
+                  // console.log('LADs:', lads); // FIXME:
+                  // console.log('Runtimes:', runtimes);
                 }}
                 isOptionEqualToValue={(option, value) =>
                   option.ladId === value.ladId
@@ -194,11 +250,6 @@ export default function Analytics() {
               />
             </MUITooltip>
           </Toolbar>
-          {false && (
-            <Typography sx={{ mb: 1 }}>
-              Selected LAD: {selected.name}, id: {selected.id}
-            </Typography>
-          )}
           <ResponsiveContainer>
             <ScatterChart
               margin={{
@@ -214,6 +265,15 @@ export default function Analytics() {
                 name='Day time'
                 stroke={theme.palette.text.secondary}
                 style={theme.typography.body2}
+                domain={[0, 1440]}
+                tickCount={25}
+                tickFormatter={(number) => {
+                  if (number % 120 == 0) {
+                    return `${number / 60}:00`;
+                  } else {
+                    return '';
+                  }
+                }}
               />
               <YAxis
                 type='number'
@@ -234,8 +294,18 @@ export default function Analytics() {
                   Trip time (minutes)
                 </Label>
               </YAxis>
-              <Tooltip />
-              <Scatter data={ladStatistics} fill={indigo[900]} />
+              {ladStatisticsWithDepth.map((generation, index) => (
+                <Scatter
+                  key={index}
+                  data={generation}
+                  fill={
+                    indigo[
+                      getColorIndex(ladStatisticsWithDepth.length, index) * 100
+                    ]
+                  }
+                />
+              ))}
+              <Tooltip content={<MyTooltip />} />
             </ScatterChart>
           </ResponsiveContainer>
         </Paper>
