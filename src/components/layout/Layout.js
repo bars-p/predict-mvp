@@ -35,6 +35,7 @@ import { blue } from '@mui/material/colors';
 import SettingsDialog from './SettingsDialog';
 import InfoBlock from './Info';
 import { DataContext } from '../../contexts/DataContext';
+import smoothen from '../../utils/sigmoidSmooth';
 
 const drawerWidth = 240;
 
@@ -149,7 +150,8 @@ const predictionItems = [
 ];
 
 export default function Layout({ children }) {
-  const { settings, setSettings } = useContext(DataContext);
+  const { settings, updateSettings, setSettings, updateDaySpeedCoefs } =
+    useContext(DataContext);
 
   const [settingsItem, setSettingsItem] = useState(settings);
   const [open, setOpen] = useState(true);
@@ -173,7 +175,7 @@ export default function Layout({ children }) {
         settingsItem.departureShift.after &&
         settingsItem.tripTimeVariationPercent
       ) {
-        setSettings(settingsItem);
+        updateSettings(settingsItem);
         showInfo('success', 'Settings Updated');
       } else {
         console.error('Incomplete or Incorrect Settings', settingsItem);

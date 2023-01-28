@@ -5,11 +5,23 @@ import getSegmentsData from '../data/SegmentsData';
 import getLadsData from '../data/LadsData';
 import getTimeTableData from '../data/TimeTableData';
 import getRuntimesData from '../data/RuntimesData';
+import smoothen from '../utils/sigmoidSmooth';
 
 export const DataContext = createContext();
 
 const DataContextProvider = ({ children }) => {
   const [settings, setSettings] = useState(getSettingsData());
+  const updateSettings = (newSettings) => {
+    setSettings(newSettings);
+    setDaySpeedCoefs(smoothen(newSettings.dayPeriodCoefficients));
+  };
+
+  const [daySpeedCoefs, setDaySpeedCoefs] = useState(
+    smoothen(settings.dayPeriodCoefficients)
+  );
+  const updateDaySpeedCoefs = (newCoefs) => {
+    setDaySpeedCoefs(newCoefs);
+  };
 
   const [sites, setSites] = useState(getSitesData());
   const deleteSite = (id) => {
@@ -89,7 +101,7 @@ const DataContextProvider = ({ children }) => {
 
   const [runtimes, setRuntimes] = useState(getRuntimesData());
   const renewRuntimes = (newRuntimes) => {
-    setRuntimes(newRuntimes); // FIXME:
+    setRuntimes(newRuntimes); // FIXME: Possible not needed to renew
   };
   const addRuntimes = (rt) => {
     setRuntimes([...runtimes, rt]);
@@ -109,7 +121,9 @@ const DataContextProvider = ({ children }) => {
     <DataContext.Provider
       value={{
         settings,
-        setSettings,
+        updateSettings,
+        daySpeedCoefs,
+        updateDaySpeedCoefs,
         sites,
         deleteSite,
         addSite,

@@ -57,10 +57,12 @@ export default function SettingsDialog(props) {
   };
 
   const handleClose = () => {
+    setLocal({ fromTime: '00:00', value: 0 });
     onClose(false);
   };
 
   const handleSave = () => {
+    setLocal({ fromTime: '00:00', value: 0 });
     onClose(true);
   };
 

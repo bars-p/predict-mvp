@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -17,7 +17,8 @@ export default function Dashboard() {
   const sitesRoute = '/sites';
   const segmentsRoute = '/segments';
   const ladsRoute = '/lads';
-  const { settings, sites, segments, lads } = useContext(DataContext);
+  const { settings, daySpeedCoefs, sites, segments, lads } =
+    useContext(DataContext);
 
   const getSiteCodeById = (id) => {
     return sites.find((site) => site.id == id)?.short || '?';
@@ -179,7 +180,10 @@ export default function Dashboard() {
               height: '45vh',
             }}
           >
-            <Chart coefficients={settings.dayPeriodCoefficients} />
+            <Chart
+              coefficients={settings.dayPeriodCoefficients}
+              smoothCoefs={daySpeedCoefs}
+            />
           </Paper>
         </Grid>
       </Grid>
