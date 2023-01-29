@@ -76,13 +76,17 @@ export default function SettingsDialog(props) {
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
           <Grid container columnSpacing={2} rowSpacing={1}>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <Typography variant='subtitle2' sx={{ mb: 0 }}>
                 Defaults:
               </Typography>
             </Grid>
-            <Grid item xs={1}></Grid>
-            <Grid item xs={5}>
+            <Grid item xs={6}>
+              <Typography variant='subtitle2' sx={{ mb: 0 }}>
+                Runtimes Statistics Percentile:
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
               <TextField
                 size='small'
                 variant='standard'
@@ -107,7 +111,7 @@ export default function SettingsDialog(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={3}>
               <TextField
                 size='small'
                 variant='standard'
@@ -132,14 +136,71 @@ export default function SettingsDialog(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={1}></Grid>
+            <Grid item xs={3}>
+              <TextField
+                size='small'
+                variant='standard'
+                fullWidth
+                label='Low'
+                type='number'
+                inputProps={{
+                  min: 0,
+                  max: 100,
+                  step: 1,
+                }}
+                value={item.percentile.low}
+                onChange={(e) =>
+                  setItem({
+                    ...item,
+                    percentile: {
+                      low: +e.target.value,
+                      high: item.percentile.high,
+                    },
+                  })
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>%</InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size='small'
+                variant='standard'
+                fullWidth
+                label='High'
+                type='number'
+                inputProps={{
+                  min: 0,
+                  max: 100,
+                  step: 1,
+                }}
+                value={item.percentile.high}
+                onChange={(e) =>
+                  setItem({
+                    ...item,
+                    percentile: {
+                      low: item.percentile.low,
+                      high: +e.target.value,
+                    },
+                  })
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>%</InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+
             <Grid item xs={12} sx={{ mt: 3 }}>
               <Typography variant='subtitle2'>
                 Departure scheduled time shifts variation:
               </Typography>
             </Grid>
-            <Grid item xs={1}></Grid>
-            <Grid item xs={5}>
+            <Grid item xs={3}>
               <TextField
                 size='small'
                 variant='standard'
@@ -167,7 +228,7 @@ export default function SettingsDialog(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={3}>
               <TextField
                 size='small'
                 variant='standard'
@@ -195,7 +256,10 @@ export default function SettingsDialog(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={1}></Grid>
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2}></Grid>
+            <Grid item xs={2}></Grid>
+
             <Grid item xs={12} sx={{ mt: 3 }}>
               <Typography variant='subtitle2'>Speed coefficients:</Typography>
             </Grid>

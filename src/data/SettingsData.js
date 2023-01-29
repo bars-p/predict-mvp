@@ -36,9 +36,13 @@ export default function getSettingsData() {
       },
     ],
     departureShift: {
-      before: -2,
-      after: 3,
+      before: -5,
+      after: 5,
     },
-    tripTimeVariationPercent: 10,
+    tripTimeVariationPercent: 20,
+    percentile: {
+      low: 10,
+      high: 90,
+    },
   };
 }

@@ -10,13 +10,14 @@ import MUITooltip from '@mui/material/Tooltip';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/material';
-import { indigo } from '@mui/material/colors';
+import { indigo, blue, lightBlue } from '@mui/material/colors';
 
 import Title from '../layout/Title';
 import { DataContext } from '../../contexts/DataContext';
 import { timeToMinutes, minutesToTime } from '../../utils/minutes';
 
 import {
+  ComposedChart,
   LineChart,
   Line,
   XAxis,
@@ -68,12 +69,12 @@ function MyTooltip(props) {
         padding={1}
         sx={{ background: 'white', border: '1px solid lightgrey' }}
       >
-        <Typography variant='body2'>
+        {/* <Typography variant='body2'>
           {payload[0].name}: {minutesToTime(payload[0].value)}
         </Typography>
         <Typography variant='body2'>
           {payload[1].name}: {minutesToTime(payload[1].value)}
-        </Typography>
+        </Typography> */}
       </Box>
     );
   }
@@ -119,6 +120,8 @@ export default function Analytics() {
     [startPoint, endPoint],
   ]);
 
+  const [ladAverage, setLadAverage] = useState([startPoint, endPoint]); // TODO: Check!
+
   const getLadData = (ladId) => {
     const data = runtimes
       .find((rt) => rt.ladId == ladId)
@@ -148,39 +151,62 @@ export default function Analytics() {
         }));
         return tripsData;
       });
-    console.log('LAD data with Depth:', depthRuntimes);
+    // console.log('LAD data with Depth:', depthRuntimes); // FIXME:
+    const averageData = getAverageAndPercentiles(depthRuntimes);
     setLadStatisticsWithDepth(depthRuntimes);
+    setLadAverage(averageData);
   };
 
-  const getGenerationFill = (index) => {
-    switch (index) {
-      case 0:
-      case 1:
-      case 2:
-        return indigo[900];
-      case 3:
-      case 4:
-      case 5:
-        return indigo[800];
-      case 6:
-      case 7:
-      case 8:
-        return indigo[700];
-      case 9:
-      case 10:
-      case 11:
-        return indigo[600];
-      case 12:
-      case 13:
-      case 14:
-        return indigo[500];
-      case 15:
-      case 16:
-      case 17:
-        return indigo[400];
-      default:
-        return indigo[300];
+  const getAverageAndPercentiles = (
+    dataWithDepth = ladStatisticsWithDepth,
+    percentileLow = settings.percentile.low / 100,
+    percentileHigh = settings.percentile.high / 100
+  ) => {
+    const numberOfGenerations = dataWithDepth.length;
+    if (!numberOfGenerations) {
+      return;
     }
+    const stepLow =
+      numberOfGenerations * percentileLow < 1
+        ? 0
+        : Math.floor(numberOfGenerations * percentileLow - 1);
+    const stepHigh =
+      numberOfGenerations * (1 - percentileHigh) < 1
+        ? 1
+        : Math.floor(numberOfGenerations * (1 - percentileHigh) + 1);
+
+    // console.warn('Step Low, Step High', stepLow, stepHigh);
+
+    const averageAndPercentiles = {
+      average: [],
+      percentileLow: [],
+      percentileHigh: [],
+    };
+    for (let i = 0; i < dataWithDepth[0].length; i++) {
+      const generationItems = dataWithDepth.map((generation) => generation[i]);
+      generationItems.sort((a, b) => a.y - b.y);
+      // console.lof("Sorted Generation Items:", generationItems);
+      const sum = generationItems.reduce(
+        (acc, cur) => {
+          return {
+            x: acc.x + cur.x,
+            y: acc.y + cur.y,
+          };
+        },
+        { x: 0, y: 0 }
+      );
+      const average = {
+        x: Math.round(sum.x / numberOfGenerations),
+        y: Math.round(sum.y / numberOfGenerations),
+      };
+      averageAndPercentiles.average.push(average);
+      averageAndPercentiles.percentileLow.push(generationItems[stepLow]);
+      averageAndPercentiles.percentileHigh.push(
+        generationItems[numberOfGenerations - stepHigh]
+      );
+    }
+    // console.log('Average:', averageAndPercentiles);
+    return averageAndPercentiles;
   };
 
   function getColorIndex(total, index) {
@@ -239,7 +265,7 @@ export default function Analytics() {
                     trips: newValue.trips,
                     depth: newValue.depth,
                   });
-                  getLadData(newValue.ladId);
+                  // getLadData(newValue.ladId);
                   getLadDataWithDepth(newValue.ladId);
                   // console.log('LADs:', lads); // FIXME:
                   // console.log('Runtimes:', runtimes);
@@ -251,7 +277,7 @@ export default function Analytics() {
             </MUITooltip>
           </Toolbar>
           <ResponsiveContainer>
-            <ScatterChart
+            <LineChart
               margin={{
                 top: 16,
                 right: 16,
@@ -295,18 +321,46 @@ export default function Analytics() {
                 </Label>
               </YAxis>
               {ladStatisticsWithDepth.map((generation, index) => (
-                <Scatter
+                <Line
                   key={index}
                   data={generation}
+                  dataKey='y'
                   fill={
-                    indigo[
+                    lightBlue[
                       getColorIndex(ladStatisticsWithDepth.length, index) * 100
                     ]
                   }
+                  stroke='null'
                 />
               ))}
-              <Tooltip content={<MyTooltip />} />
-            </ScatterChart>
+              <Line
+                data={ladAverage.percentileLow}
+                dataKey='y'
+                stroke={blue[900]}
+                strokeWidth={2}
+                opacity={1}
+                type='natural'
+                dot={false}
+              />
+              <Line
+                data={ladAverage.percentileHigh}
+                dataKey='y'
+                stroke={blue[900]}
+                strokeWidth={2}
+                opacity={1}
+                type='natural'
+                dot={false}
+              />
+              <Line
+                data={ladAverage.average}
+                dataKey='y'
+                stroke='red'
+                strokeWidth={5}
+                opacity={0.5}
+                type='natural'
+                dot={false}
+              />
+            </LineChart>
           </ResponsiveContainer>
         </Paper>
       </Grid>
