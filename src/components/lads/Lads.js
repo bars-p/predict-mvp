@@ -246,20 +246,24 @@ export default function Lads() {
           </Paper>
         </Grid>
       </Grid>
-      <EditDialog
-        open={open}
-        title={title}
-        item={item}
-        setItem={setItem}
-        onClose={processClose}
-      />
-      <HeadwaysDialog
-        open={openHeadways}
-        title='Edit headways'
-        item={item}
-        setItem={setItem}
-        onClose={processHeadways}
-      />
+      {open && (
+        <EditDialog
+          open={open}
+          title={title}
+          item={item}
+          setItem={setItem}
+          onClose={processClose}
+        />
+      )}
+      {openHeadways && (
+        <HeadwaysDialog
+          open={openHeadways}
+          title='Edit headways'
+          item={item}
+          setItem={setItem}
+          onClose={processHeadways}
+        />
+      )}
       <Info
         open={openInfo}
         setOpen={setOpenInfo}

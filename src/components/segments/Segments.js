@@ -172,13 +172,15 @@ export default function Segments() {
           </Paper>
         </Grid>
       </Grid>
-      <EditDialog
-        open={open}
-        title={title}
-        item={tableItem}
-        setItem={setTableItem}
-        onClose={processClose}
-      />
+      {open && (
+        <EditDialog
+          open={open}
+          title={title}
+          item={tableItem}
+          setItem={setTableItem}
+          onClose={processClose}
+        />
+      )}
       <Info
         open={openInfo}
         setOpen={setOpenInfo}

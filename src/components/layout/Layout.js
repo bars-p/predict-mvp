@@ -343,13 +343,15 @@ export default function Layout({ children }) {
           </Container>
         </Box>
       </Box>
-      <SettingsDialog
-        open={openDialog}
-        title='General Settings'
-        item={settingsItem}
-        setItem={setSettingsItem}
-        onClose={processSettings}
-      />
+      {openDialog && (
+        <SettingsDialog
+          open={openDialog}
+          title='General Settings'
+          item={settingsItem}
+          setItem={setSettingsItem}
+          onClose={processSettings}
+        />
+      )}
       <InfoBlock
         open={openInfo}
         setOpen={setOpenInfo}

@@ -21,14 +21,14 @@ export default function Sites() {
     point: [0, 0],
   });
   const getItemById = (id) => {
-    let item = sites.find(site => site.id == id);
+    let item = sites.find((site) => site.id == id);
     if (item == undefined) {
       item = getDefaultItem();
     }
     return item;
   };
   const getNextId = () => {
-    const ids = sites.map(site => site.id);
+    const ids = sites.map((site) => site.id);
     return Math.max(...ids) + 1;
   };
   const processClose = (saveItem) => {
@@ -61,7 +61,7 @@ export default function Sites() {
   const [item, setItem] = useState(getDefaultItem());
   const [openInfo, setOpenInfo] = useState(false);
   const [infoText, setInfoText] = useState('');
-  const [infoSeverity, setInfoSeverity] = useState('info')
+  const [infoSeverity, setInfoSeverity] = useState('info');
 
   const tableHeaders = [
     {
@@ -107,8 +107,8 @@ export default function Sites() {
       sort: false,
     },
   ];
-  
-  const tableData = sites.map(site => ({
+
+  const tableData = sites.map((site) => ({
     id: site.id,
     name: site.name,
     code: site.short,
@@ -117,23 +117,22 @@ export default function Sites() {
     action: null,
   }));
 
-
   return (
     <ThemeProvider theme={mdTheme}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Paper 
-            sx={{ 
-              p: 2, 
-              display: 'flex', 
-              flexDirection: 'column', 
-              maxHeight: '83vh' 
+          <Paper
+            sx={{
+              p: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              maxHeight: '83vh',
             }}
           >
-            <EnhancedTableToolbar 
+            <EnhancedTableToolbar
               onAdd={() => {
                 setTitle('Add Site');
-                setItem(getDefaultItem())
+                setItem(getDefaultItem());
                 setOpen(true);
               }}
             >
@@ -143,7 +142,7 @@ export default function Sites() {
               <EnhancedTable
                 onEdit={(id) => {
                   setTitle('Edit Site');
-                  setItem(getItemById(id)); 
+                  setItem(getItemById(id));
                   setOpen(true);
                 }}
                 headers={tableHeaders}
@@ -154,14 +153,16 @@ export default function Sites() {
           </Paper>
         </Grid>
       </Grid>
-      <EditDialog 
-        open={open} 
-        title={title} 
-        item={item} 
-        setItem={setItem} 
-        onClose={processClose} 
-      />
-      <Info 
+      {open && (
+        <EditDialog
+          open={open}
+          title={title}
+          item={item}
+          setItem={setItem}
+          onClose={processClose}
+        />
+      )}
+      <Info
         open={openInfo}
         setOpen={setOpenInfo}
         text={infoText}
