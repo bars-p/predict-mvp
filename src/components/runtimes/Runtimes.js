@@ -46,8 +46,6 @@ export default function Runtimes() {
 
   const getTimetableByLadId = (id) => {
     const [timetable] = [...timetables.filter((tt) => tt.ladId == id)];
-    console.log('LAD id:', id); // FIXME:
-    console.log('TT Found:', timetable);
     return {
       id: timetable?.id || undefined,
       ladId: id,
@@ -68,7 +66,6 @@ export default function Runtimes() {
 
   const processTimetable = (saveItem) => {
     if (saveItem) {
-      console.log('Timetable to Save:', timetable); // FIXME:
       if (timetable.lad && timetable.departures.length) {
         if (timetable.id) {
           updateTimetable({
@@ -95,7 +92,6 @@ export default function Runtimes() {
 
   const processRuntimes = (saveItem) => {
     if (saveItem) {
-      console.log('Runtimes to save', ladRuntimes); // FIXME:
       if (ladRuntimes.departures.length && ladRuntimes.runtimes.length) {
         if (ladRuntimes.id) {
           updateRuntimes(ladRuntimes);
@@ -138,7 +134,6 @@ export default function Runtimes() {
     updateRuntimes,
   } = useContext(DataContext);
 
-  // const [item, setItem] = useState(getDefaultItem()); // FIXME:
   const [timetable, setTimetable] = useState(getDefaultTimetableItem());
   const [ladRuntimes, setLadRuntimes] = useState(getDefaultLadRuntimes());
   const [openTimetable, setOpenTimetable] = useState(false);
@@ -255,25 +250,18 @@ export default function Runtimes() {
               maxHeight: '83vh',
             }}
           >
-            <EnhancedTableToolbar
-              onRegenerate={() => {
-                console.log('Regenerate Runtimes');
-              }}
-            >
+            <EnhancedTableToolbar onRegenerate={() => {}}>
               Runtimes and Time Table for LADs (ready: {tableData.length})
             </EnhancedTableToolbar>
             <TableContainer>
               <EnhancedTable
                 onTimetable={(id) => {
                   setTimetable(getTimetableByLadId(id));
-                  console.log('Time Table', timetable);
                   setOpenTimetable(true);
                 }}
                 onRuntimes={(id) => {
                   setLadRuntimes(getRuntimesByLadId(id));
                   setTimetable(getTimetableByLadId(id));
-                  console.log('LAD Timetable:', timetable); // FIXME:
-                  console.log('LAD Runtimes:', ladRuntimes); // FIXME:
                   setOpenRuntimes(true);
                 }}
                 headers={tableHeaders}

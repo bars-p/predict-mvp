@@ -31,51 +31,15 @@ import {
 
 const mdTheme = createTheme();
 
-// FIXME: Delete below later
-const demoLads = [
-  {
-    label: '1-0-1',
-    id: 1,
-    trips: 57,
-    depth: 99,
-  },
-  {
-    label: '2-0-1',
-    id: 2,
-    trips: 31,
-    depth: 10,
-  },
-  {
-    label: '2-0-2',
-    id: 3,
-    trips: 43,
-    depth: 3,
-  },
-];
-
-const onAdd = () => {
-  console.log('Add button pressed');
-};
-
-// FIXME: Delete above later
-
 function MyTooltip(props) {
   const { active, payload } = props;
   if (active) {
-    console.log('Tooltip Data (active, payload):', active, payload);
     return (
       <Box
         margin={1}
         padding={1}
         sx={{ background: 'white', border: '1px solid lightgrey' }}
-      >
-        {/* <Typography variant='body2'>
-          {payload[0].name}: {minutesToTime(payload[0].value)}
-        </Typography>
-        <Typography variant='body2'>
-          {payload[1].name}: {minutesToTime(payload[1].value)}
-        </Typography> */}
-      </Box>
+      ></Box>
     );
   }
 }
@@ -114,7 +78,7 @@ export default function Analytics() {
     trips: undefined,
     depth: undefined,
   });
-  const [ladStatistics, setLadStatistics] = useState([startPoint, endPoint]);
+  const [ladStatistics, setLadStatistics] = useState([startPoint, endPoint]); // FIXME:
 
   const [ladStatisticsWithDepth, setLadStatisticsWithDepth] = useState([
     [startPoint, endPoint],
@@ -134,8 +98,6 @@ export default function Analytics() {
         }));
         return [...acc, ...tripsData];
       }, []);
-    // data.push(endPoint);
-    console.log('LAD data ready:', data);
     setLadStatistics(data);
   };
 
@@ -151,7 +113,6 @@ export default function Analytics() {
         }));
         return tripsData;
       });
-    // console.log('LAD data with Depth:', depthRuntimes); // FIXME:
     const averageData = getAverageAndPercentiles(depthRuntimes);
     setLadStatisticsWithDepth(depthRuntimes);
     setLadAverage(averageData);
@@ -175,8 +136,6 @@ export default function Analytics() {
         ? 1
         : Math.floor(numberOfGenerations * (1 - percentileHigh) + 1);
 
-    // console.warn('Step Low, Step High', stepLow, stepHigh);
-
     const averageAndPercentiles = {
       average: [],
       percentileLow: [],
@@ -185,7 +144,6 @@ export default function Analytics() {
     for (let i = 0; i < dataWithDepth[0].length; i++) {
       const generationItems = dataWithDepth.map((generation) => generation[i]);
       generationItems.sort((a, b) => a.y - b.y);
-      // console.lof("Sorted Generation Items:", generationItems);
       const sum = generationItems.reduce(
         (acc, cur) => {
           return {
@@ -205,7 +163,6 @@ export default function Analytics() {
         generationItems[numberOfGenerations - stepHigh]
       );
     }
-    // console.log('Average:', averageAndPercentiles);
     return averageAndPercentiles;
   };
 
@@ -259,16 +216,14 @@ export default function Analytics() {
                 renderInput={(params) => <TextField {...params} label='LAD' />}
                 sx={{ width: 150 }}
                 onChange={(e, newValue) => {
-                  console.log(newValue); // FIXME:
                   setSelected({ name: newValue.label, id: newValue.ladId });
                   setTooltipData({
                     trips: newValue.trips,
                     depth: newValue.depth,
                   });
-                  // getLadData(newValue.ladId);
                   getLadDataWithDepth(newValue.ladId);
-                  // console.log('LADs:', lads); // FIXME:
-                  // console.log('Runtimes:', runtimes);
+                  console.log('LAD data:', ladStatisticsWithDepth); // FIXME:
+                  // console.log(); // FIXME:
                 }}
                 isOptionEqualToValue={(option, value) =>
                   option.ladId === value.ladId

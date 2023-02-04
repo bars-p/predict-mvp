@@ -21,7 +21,6 @@ import { timeToMinutes, minutesToTime } from '../../utils/minutes';
 export default function TimetableDialog(props) {
   const { open, onClose, item, setItem } = props;
 
-  // const [local, setLocal] = useState({ fromTime: '00:00', value: 0 }); // FIXME:
   const [shift, setShift] = useState(0);
 
   const handleClose = () => {
@@ -35,11 +34,6 @@ export default function TimetableDialog(props) {
   };
 
   const generateTimetable = () => {
-    // FIXME:
-    console.log('Generate TT Started');
-    console.log('LAD:', item);
-    console.log('Shift:', shift);
-
     const startMinutes = timeToMinutes(item.lad.serviceTime.start);
     let endMinutes = timeToMinutes(item.lad.serviceTime.end);
     if (startMinutes > endMinutes) {
@@ -52,7 +46,6 @@ export default function TimetableDialog(props) {
     const timetable = [];
 
     let tripMinutes = startMinutes + +shift;
-    console.log('Start Minutes:', tripMinutes);
     while (tripMinutes < endMinutes) {
       timetable.push(minutesToTime(tripMinutes));
       let headway = headways[headways.length - 1].value;
@@ -65,7 +58,6 @@ export default function TimetableDialog(props) {
       }
       tripMinutes += headway;
     }
-    console.log('Timetable Generated:', timetable);
     setItem({ ...item, departures: [...timetable] });
   };
 

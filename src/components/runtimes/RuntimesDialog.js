@@ -54,30 +54,14 @@ export default function RuntimesDialog(props) {
   };
 
   const getCoefficient = (departureTime) => {
-    // const periodsNum = settings.dayPeriodCoefficients.length;
-    // if (periodsNum == 0) {
-    //   return 0;
-    // }
-    // let value = settings.dayPeriodCoefficients[periodsNum - 1].value;
-    // for (let i = 0; i < settings.dayPeriodCoefficients.length; i++) {
-    //   if (departureTime < settings.dayPeriodCoefficients[i].fromTime) {
-    //     break;
-    //   } else {
-    //     value = settings.dayPeriodCoefficients[i].value;
-    //   }
-    // }
-
     const departureMinutes = timeToMinutes(departureTime);
     const value = speedCoefs[departureMinutes].y;
 
-    console.log('Coef found for time:', departureTime, value); // FIXME:
     return value;
   };
 
   const generateSegmentRuntime = (segmentId, coef) => {
     const segment = segmentsData.find((seg) => seg.id == segmentId);
-    console.log('Segment Found', segment);
-    // TODO: Add Random Values FIXME:
     const variationGap =
       segment.length * (settings.tripTimeVariationPercent / 100);
     const variation = Math.random() * variationGap - variationGap / 2;
@@ -86,15 +70,11 @@ export default function RuntimesDialog(props) {
           ((segment.length + variation) / 1000 / (coef * segment.speed)) * 60
         )
       : 0;
-    console.warn('Generated Runtime for Segment', segmentId, runtime);
 
     return runtime;
   };
 
   const generateRuntimes = () => {
-    // FIXME:
-    console.log('Generate Runtimes started');
-    console.log('Timetable:', timetable);
     if (depth < 1) {
       return;
     }
@@ -104,7 +84,7 @@ export default function RuntimesDialog(props) {
     for (let i = 0; i < depth; i++) {
       const trips = [];
       for (let j = 0; j < departures.length; j++) {
-        const tripId = j + 1;
+        // const tripId = j + 1;
         const departure = generateDepartureTime(departures[j]);
         const coef = getCoefficient(departure);
         const segments = [];
@@ -117,7 +97,7 @@ export default function RuntimesDialog(props) {
         }
 
         trips.push({
-          tripId: tripId,
+          tripId: j,
           departure: departure,
           segments: [...segments],
         });
@@ -128,7 +108,11 @@ export default function RuntimesDialog(props) {
       });
     }
     // FIXME:
-    console.log('Generated Runtimes:', runtimes);
+    console.warn('Generated Runtimes');
+    console.log('LadId:', timetable.ladId);
+    console.log('Timetable Departures:', timetable.departures);
+    console.log('Runtimes:', runtimes);
+
     setItem({
       id: item.id,
       ladId: timetable.ladId,
