@@ -21,8 +21,8 @@ import { timeToMinutes, minutesToTime } from '../../utils/minutes';
 
 import Chart from './Chart';
 
-const defaultLayover = 6;
-const defaultMinLayover = 2;
+// const defaultLayover = 6;
+// const defaultMinLayover = 2;
 
 const mdTheme = createTheme();
 
@@ -88,8 +88,8 @@ export default function Probabilities() {
   const [statistics, setStatistics] = useState([]);
 
   const [timeLeft, setTimeLeft] = useState(0);
-  const [layover, setLayover] = useState(defaultLayover);
-  const [minLayover, setMinLayover] = useState(defaultMinLayover);
+  const [layover, setLayover] = useState(settings.layover.default);
+  const [minLayover, setMinLayover] = useState(settings.layover.minimum);
 
   const [arriveProbability, setArriveProbability] = useState(0.2);
   const [departProbability, setDepartProbability] = useState(0.7);
@@ -243,8 +243,8 @@ export default function Probabilities() {
 
     setStatistics(dataToPlot);
     setTimeLeft(average);
-    setLayover(defaultLayover);
-    setMinLayover(defaultMinLayover);
+    setLayover(settings.layover.default);
+    setMinLayover(settings.layover.minimum);
   };
 
   const verifyLayover = (e) => {
@@ -453,7 +453,7 @@ export default function Probabilities() {
                 </Typography>
                 <CircleIcon sx={{ color: valueToColor(departProbability) }} />
                 <Typography sx={{ pl: 1, pr: 5 }}>
-                  Depart Next Trip On-time:{' '}
+                  Depart with LO On-time:{' '}
                   <strong>{valueToPercent(departProbability)}</strong>
                 </Typography>
               </Grid>

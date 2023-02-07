@@ -195,10 +195,13 @@ export default function SettingsDialog(props) {
               />
             </Grid>
 
-            <Grid item xs={12} sx={{ mt: 3 }}>
+            <Grid item xs={6} sx={{ mt: 3 }}>
               <Typography variant='subtitle2'>
                 Departure scheduled time shifts variation:
               </Typography>
+            </Grid>
+            <Grid item xs={6} sx={{ mt: 3 }}>
+              <Typography variant='subtitle2'>Layover values:</Typography>
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -256,9 +259,68 @@ export default function SettingsDialog(props) {
                 }}
               />
             </Grid>
-            <Grid item xs={2}></Grid>
-            <Grid item xs={2}></Grid>
-            <Grid item xs={2}></Grid>
+            <Grid item xs={3}>
+              <TextField
+                size='small'
+                variant='standard'
+                fullWidth
+                label='Default'
+                type='number'
+                value={item.layover.default}
+                onChange={(e) =>
+                  setItem({
+                    ...item,
+                    layover: {
+                      default: +e.target.value,
+                      minimum:
+                        item.layover.minimum <= +e.target.value
+                          ? item.layover.minimum
+                          : +e.target.value,
+                    },
+                  })
+                }
+                inputProps={{
+                  min: 0,
+                  step: 1,
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>min</InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                size='small'
+                variant='standard'
+                fullWidth
+                label='Minimum'
+                type='number'
+                value={item.layover.minimum}
+                onChange={(e) =>
+                  setItem({
+                    ...item,
+                    layover: {
+                      default:
+                        item.layover.default >= +e.target.value
+                          ? item.layover.default
+                          : +e.target.value,
+                      minimum: +e.target.value,
+                    },
+                  })
+                }
+                inputProps={{
+                  min: 0,
+                  step: 1,
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>min</InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
 
             <Grid item xs={12} sx={{ mt: 3 }}>
               <Typography variant='subtitle2'>Speed coefficients:</Typography>

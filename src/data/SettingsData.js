@@ -41,8 +41,12 @@ export default function getSettingsData() {
     },
     tripTimeVariationPercent: 20,
     percentile: {
-      low: 10,
-      high: 90,
+      low: 20,
+      high: 80,
+    },
+    layover: {
+      default: 6,
+      minimum: 2,
     },
   };
 }

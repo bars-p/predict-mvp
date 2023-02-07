@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { indigo, red, blue } from '@mui/material/colors';
+import { indigo, grey, blue } from '@mui/material/colors';
 import {
   LineChart,
   Line,
@@ -176,28 +176,29 @@ export default function Chart(props) {
             fill={indigo[400]}
             strokeWidth={3}
           />
-
           <Scatter
-            name='Arrival Time'
+            name='Arrival'
             data={timeLeftLine}
             line
             fill={blue[300]}
             strokeWidth={3}
           />
           <Scatter
-            legendType='none'
-            data={timeNextLine}
-            line
-            fill='lightgrey'
-            strokeWidth={3}
-          />
-          <Scatter
-            name='Departure Time'
+            name='Departure with LO'
             data={timeNextDelayedLine}
             line
             fill={blue[700]}
             strokeWidth={3}
           />
+          {minLayover != 0 && (
+            <Scatter
+              name='Departure'
+              data={timeNextLine}
+              line
+              fill={grey[400]}
+              strokeWidth={3}
+            />
+          )}
           <Tooltip
             labelStyle={labelStyle}
             labelFormatter={(label) => minutesToTime(label)}
