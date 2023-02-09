@@ -91,11 +91,11 @@ const configurationItems = [
     icon: <DashboardIcon />,
     path: '/',
   },
-  {
-    text: 'Scheme',
-    icon: <MapIcon />,
-    path: '/scheme',
-  },
+  // {
+  //   text: 'Scheme',
+  //   icon: <MapIcon />,
+  //   path: '/scheme',
+  // },
   {
     text: 'Sites',
     icon: <PinDropIcon />,
@@ -111,11 +111,11 @@ const configurationItems = [
     icon: <PolylineIcon />,
     path: '/segments',
   },
-  {
-    text: 'LADs by Segments',
-    icon: <CallSplitIcon />,
-    path: '/ladsbysegments',
-  },
+  // {
+  //   text: 'LADs by Segments',
+  //   icon: <CallSplitIcon />,
+  //   path: '/ladsbysegments',
+  // },
 ];
 
 const historicalItems = [
@@ -137,16 +137,16 @@ const predictionItems = [
     icon: <DepartureBoardIcon />,
     path: '/probabilities',
   },
-  {
-    text: 'Monitor',
-    icon: <DisplaySettingsIcon />,
-    path: '/monitor',
-  },
-  {
-    text: 'Simulation',
-    icon: <AutoModeIcon />,
-    path: '/simulation',
-  },
+  // {
+  //   text: 'Monitor',
+  //   icon: <DisplaySettingsIcon />,
+  //   path: '/monitor',
+  // },
+  // {
+  //   text: 'Simulation',
+  //   icon: <AutoModeIcon />,
+  //   path: '/simulation',
+  // },
 ];
 
 export default function Layout({ children }) {
